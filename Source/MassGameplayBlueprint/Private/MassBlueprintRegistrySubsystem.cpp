@@ -11,10 +11,13 @@ void UMassBlueprintRegistrySubsystem::Initialize(FSubsystemCollectionBase& Colle
 {
 	UMassSimulationSubsystem* SimulationSubsystem = Collection.InitializeDependency<UMassSimulationSubsystem>();
 	const auto& ProcessorClasses = GetDefault<UMassBlueprintSettings>()->BlueprintProcessorClasses;
-	for(const auto ProcessorClass:ProcessorClasses)
+	for(const auto& ProcessorClass:ProcessorClasses)
 	{
 		if(const auto Class = ProcessorClass.TryLoadClass<UMassProcessorBlueprint>())
+		{
+			Class->GetDefaultObject<UMassProcessorBlueprint>()->ConfigureQueries();
 			SimulationSubsystem->RegisterDynamicProcessor(*Class->GetDefaultObject<UMassProcessorBlueprint>());
+		}
 	}
 	Super::Initialize(Collection);
 }

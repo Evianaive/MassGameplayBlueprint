@@ -2,6 +2,7 @@
 
 #include "EditorClassUtils.h"
 #include "MassBlueprintSettings.h"
+#include "MassProcessorBlueprint.h"
 #include "AssetRegistry/AssetRegistryModule.h"
 #include "Editor/ClassViewer/Private/ClassViewerNode.h"
 #include "UObject/CoreRedirects.h"
@@ -106,9 +107,27 @@ void FMassProcessorBlueprintAutoManager::UpdateBlueprintProcessor()
 		if (!ClassPath.IsNull())
 		{
 			FixupClassCoreRedirects(ClassPath);
-			if(UClass* Class = FindObject<UClass>(nullptr, *ClassPath.ToString()))
+			//Todo 此处应该还是不需要Load，因为ClassPicker也没load，但能选蓝图子类
+			FString ParentClassPathString;
+			if(AssetData.GetTagValue(FBlueprintTags::ParentClassPath,ParentClassPathString))
 			{
-				GetMutableDefault<UMassBlueprintSettings>()->AddBlueprintProcessorClass(Class);			
+				FTopLevelAssetPath ParentClassPath(FTopLevelAssetPath(*FPackageName::ExportTextPathToObjectPath(ParentClassPathString)));
+				FixupClassCoreRedirects(ParentClassPath);
+				UE_LOG(LogTemp,Log,TEXT("class %s is loaded"),*ParentClassPathString);
+
+				const bool bNormalBlueprintType = AssetData.GetTagValueRef<FString>(FBlueprintTags::BlueprintType) == TEXT("BPType_Normal");
+				// Get the class flags.
+				const uint32 ClassFlags = AssetData.GetTagValueRef<uint32>(FBlueprintTags::ClassFlags);
+				
+				if(UClass* Class = LoadObject<UClass>(nullptr, *ClassPath.ToString()))
+				{
+					if(Class->IsChildOf(UMassProcessorBlueprint::StaticClass()))
+					{
+						FString NativeParent;
+						AssetData.GetTagValue<FString>(FBlueprintTags::NativeParentClassPath, NativeParent);
+						GetMutableDefault<UMassBlueprintSettings>()->AddBlueprintProcessorClass(Class);
+					}
+				}	
 			}
 		}
 	// 	else

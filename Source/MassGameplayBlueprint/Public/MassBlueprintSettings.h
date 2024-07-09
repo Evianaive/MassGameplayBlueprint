@@ -41,7 +41,7 @@ protected:
 	void OnPostEngineInit();
 public:
 	/** This list contains all the processors available in the given binary (including plugins). The contents are sorted by display name.*/
-	UPROPERTY(VisibleAnywhere, Category = Mass, Config, EditFixedSize, meta=(MetaClass="/Script/MassGameplayBlueprint.MassProcessorBlueprint"))
+	UPROPERTY(VisibleAnywhere, Category = Mass, Transient, EditFixedSize, meta=(MetaClass="/Script/MassGameplayBlueprint.MassProcessorBlueprint"))
 	TArray<FSoftClassPath> BlueprintProcessorClasses;
 
 #if WITH_EDITORONLY_DATA

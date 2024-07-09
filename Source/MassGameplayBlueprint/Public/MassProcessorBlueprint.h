@@ -16,7 +16,7 @@ class MASSGAMEPLAYBLUEPRINT_API UMassProcessorBlueprint : public UMassProcessor
 {
 	GENERATED_BODY()
 public:
-// Todo don't auto register!!
+	UMassProcessorBlueprint();
 	virtual void PostCDOContruct() override;
 	
 	virtual void ConfigureQueries() override;

@@ -6,6 +6,12 @@
 #include "MassEntityEditorSubsystem.h"
 #include "MassProcessorExecWrapper.h"
 
+UMassProcessorBlueprint::UMassProcessorBlueprint()
+{
+	bAutoRegisterWithProcessingPhases = false;
+	bCanShowUpInSettings = false;
+}
+
 void UMassProcessorBlueprint::PostCDOContruct()
 {
 	Super::PostCDOContruct();
@@ -35,7 +41,7 @@ void UMassProcessorBlueprint::PostLoad()
 	Super::PostLoad();
 	if (GetClass()->HasAnyClassFlags(CLASS_Abstract) == false)
 	{
-		ConfigureQueries();
+		// ConfigureQueries();
 		// check(GEditor);
 		// UMassEntityEditorSubsystem* Mass = GEditor->GetEditorSubsystem<UMassEntityEditorSubsystem>();
 		// check(Mass);
