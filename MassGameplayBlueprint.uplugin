@@ -21,6 +21,11 @@
 			"LoadingPhase": "PreLoadingScreen"
 		},
 		{
+			"Name": "MassGameplayBlueprintKismet",
+			"Type": "UncookedOnly",
+			"LoadingPhase": "PreLoadingScreen"
+		},
+		{
 			"Name": "MassGameplayBlueprintEditor",
 			"Type": "Editor",
 			"LoadingPhase": "PreLoadingScreen"

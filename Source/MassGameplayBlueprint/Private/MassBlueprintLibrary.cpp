@@ -11,12 +11,35 @@
 
 #define LOCTEXT_NAMESPACE "MassBlueprint"
 
+FArrayViewBlueprint& FArrayViewBlueprint::operator=(const FArrayViewBlueprint& InArrayViewBlueprint)
+{
+	ArrayView = InArrayViewBlueprint.ArrayView;
+	ArrayMax = InArrayViewBlueprint.ArrayMax;
+	Struct = InArrayViewBlueprint.Struct;
+	SizeOfStruct = 0;
+	return *this;
+}
+
+FArrayViewBlueprint::FArrayViewBlueprint(
+	const TArrayView<uint8>& InArrayView,
+	const UScriptStruct* InStruct)
+	: ArrayView(InArrayView)
+	, Struct(InStruct)
+	, SizeOfStruct(0)
+{
+}
+
+FArrayViewBlueprint::~FArrayViewBlueprint()
+{
+	ArrayView.~TArrayView();
+}
+
 int32 UMassBlueprintLibrary::GetNumEntities(const FMassProcessorExecWrapper& Wrapper)
 {
 	return Wrapper.Context->GetNumEntities();
 }
 
-bool UMassBlueprintLibrary::GetMutableFragmentView(const FMassProcessorExecWrapper& Wrapper, UScriptStruct* Struct, FArrayViewBlueprint& OutArrayView)
+bool UMassBlueprintLibrary::GetMutableFragmentView(const FMassProcessorExecWrapper& Wrapper, const UScriptStruct* Struct, FArrayViewBlueprint& OutArrayView)
 {
 	auto FragmentView = Wrapper.Context->GetMutableFragmentView(Struct);
 
@@ -29,19 +52,20 @@ bool UMassBlueprintLibrary::GetMutableFragmentView(const FMassProcessorExecWrapp
 	
 	// auto DataBlockStart = FragmentView.begin();
 	OutArrayView.ArrayView = reinterpret_cast<TArrayView<uint8>&>(FragmentView);
+	OutArrayView.ArrayMax = FragmentView.Num();
 	OutArrayView.Struct = Struct;
 	OutArrayView.SizeOfStruct = Struct->GetStructureSize();
 
 	return true;
 }
 
-bool UMassBlueprintLibrary::GetStructRef(const FArrayViewBlueprint& OutArrayView, int32 Index, int32& OutStruct)
+bool UMassBlueprintLibrary::GetStructRef(const FArrayViewBlueprint& ArrayView, int32 Index, int32& OutStruct)
 {
 	return false;
 }
 DEFINE_FUNCTION(UMassBlueprintLibrary::execGetStructRef)
 {
-	P_GET_STRUCT_REF(FArrayViewBlueprint, OutArrayView);
+	P_GET_STRUCT_REF(FArrayViewBlueprint, ArrayView);
 	P_GET_PROPERTY(FIntProperty,Index);
 	
 	Stack.MostRecentPropertyAddress = nullptr;
@@ -65,7 +89,7 @@ DEFINE_FUNCTION(UMassBlueprintLibrary::execGetStructRef)
 		FBlueprintCoreDelegates::ThrowScriptException(P_THIS, Stack, ExceptionInfo);
 		bResult = false;
 	}
-	if(ValueProp->Struct != OutArrayView.Struct)
+	if(ValueProp->Struct != ArrayView.Struct)
 	{
 		FBlueprintExceptionInfo ExceptionInfo(
 			EBlueprintExceptionType::AbortExecution,
@@ -80,9 +104,10 @@ DEFINE_FUNCTION(UMassBlueprintLibrary::execGetStructRef)
 	if(bResult)
 	{
 		P_NATIVE_BEGIN
-		OutArrayView.Struct->CopyScriptStruct(
+		// Stack.MostRecentPropertyAddress = ArrayView.ArrayView.GetData()+ArrayView.SizeOfStruct*Index;
+		ArrayView.Struct->CopyScriptStruct(
 			PropertyAddress,
-			OutArrayView.ArrayView.GetData()+OutArrayView.SizeOfStruct*Index,
+			Stack.MostRecentPropertyAddress,
 			1);
 		P_NATIVE_END
 	}
@@ -100,7 +125,7 @@ bool UMassBlueprintLibrary::SpawnEntities(const UMassEntityConfigAsset* ConfigAs
 	TArray<FMassEntityHandle> Handles;
 	World->GetSubsystem<UMassSpawnerSubsystem>()->SpawnEntities(Template,NumberToSpawn,Handles);
 	return true;
-// Todo
+// Todo WorldContext
 // 	void UKismetSystemLibrary::PrintString(const UObject* WorldContextObject, const FString& InString, bool bPrintToScreen, bool bPrintToLog, FLinearColor TextColor, float Duration, const FName Key)
 // 	{
 // #if !(UE_BUILD_SHIPPING || UE_BUILD_TEST) || USE_LOGGING_IN_SHIPPING // Do not Print in Shipping or Test unless explictly enabled.
@@ -129,6 +154,38 @@ bool UMassBlueprintLibrary::SpawnEntities(const UMassEntityConfigAsset* ConfigAs
 // 		}
 // 	}
 
+}
+
+bool UMassBlueprintLibrary::GetArrayFromView(TArray<int32>& OutArray, const FArrayViewBlueprint& ArrayView)
+{
+	return false;
+}
+DEFINE_FUNCTION(UMassBlueprintLibrary::execGetArrayFromView)
+{
+	Stack.MostRecentProperty = nullptr;
+	Stack.StepCompiledIn<FArrayProperty>(NULL);
+	// Stack.MostRecentPropertyAddress;
+	FArrayProperty* ArrayProperty = CastField<FArrayProperty>(Stack.MostRecentProperty);
+	if (!ArrayProperty)
+	{
+		Stack.bArrayContextFailed = true;
+		return;
+	}
+	const UScriptStruct* InnerStruct = nullptr;
+	if(auto* StructProperty = CastField<FStructProperty>(ArrayProperty->Inner))
+	{
+		InnerStruct = StructProperty->Struct;
+	}
+	P_GET_STRUCT_REF(FArrayViewBlueprint,ArrayView);
+
+	P_FINISH;
+	P_NATIVE_BEGIN;
+	if(ArrayView.Struct == InnerStruct)
+	{
+		*(bool*)RESULT_PARAM = true;
+		Stack.MostRecentPropertyAddress = (uint8*)&ArrayView.GetAsArray();
+	}
+	P_NATIVE_END;
 }
 
 #undef LOCTEXT_NAMESPACE
