@@ -3,9 +3,9 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "MassProcessorBlueprintAutoManager.h"
 #include "Modules/ModuleManager.h"
 
+class FMassProcessorBlueprintAutoManager;
 class FMassGameplayBlueprintEditorModule : public IModuleInterface
 {
 public:

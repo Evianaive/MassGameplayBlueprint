@@ -30,7 +30,8 @@ USTRUCT(BlueprintType)
 struct FMassEntityQueryBlueprint
 {
 	GENERATED_BODY()
-	
+
+	// Mark: MassEntityQuery must be contained in memory of MassProcessor 
 	UPROPERTY()
 	FMassEntityQuery QueryInternal;
 	// UPROPERTY(EditAnywhere,Instanced,BlueprintReadWrite,meta=(EditInline))
