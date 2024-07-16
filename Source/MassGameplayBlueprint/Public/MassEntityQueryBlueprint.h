@@ -6,24 +6,51 @@
 #include "MassEntityQuery.h"
 #include "MassProcessorExecWrapper.h"
 #include "UObject/Object.h"
+#include "MassNoExprotTypes/MassNoExportTypes.h"
 #include "MassEntityQueryBlueprint.generated.h"
 
+
+#if !CPP   //noexport class
+USTRUCT(noexport, BlueprintType, BlueprintInternalUseOnly)
+struct FMassFragmentRequirementDescription
+{
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (MetaStruct = "/Script/MassEntity.MassFragment"))
+	const UScriptStruct* StructType;
+	UPROPERTY(EditAnywhere)
+	EMassFragmentAccess AccessMode = EMassFragmentAccess::ReadOnly;
+	UPROPERTY(EditAnywhere)
+	EMassFragmentPresence Presence = EMassFragmentPresence::All;
+};
+
+#endif
 /**
  * 
  */
-// Todo Same Struct in Engine Plugin is FMassFragmentRequirementDescription
+/* Same Struct in Engine Plugin is FMassFragmentRequirementDescription, we can also export it in MassNoExportTypes.h*/
 USTRUCT(BlueprintType)
-struct FMassRequirementComponentWrapper
+struct FMassRequirementWrapper_Fragment
 {
 	GENERATED_BODY()
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (MetaStruct = "/Script/MassEntity.MassFragment"))
-	TObjectPtr<UScriptStruct> Struct;	
+	TObjectPtr<UScriptStruct> StructType;	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	EMassFragmentAccess Access = EMassFragmentAccess::ReadOnly;
+	EMassFragmentAccess AccessMode = EMassFragmentAccess::ReadOnly;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	EMassFragmentPresence Presence = EMassFragmentPresence::All;
 };
+
+USTRUCT(BlueprintType)
+struct FMassRequirementWrapper_Tag
+{
+	GENERATED_BODY()
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (MetaStruct = "/Script/MassEntity.MassTag"))
+	TObjectPtr<UScriptStruct> StructType;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	EMassFragmentPresence Presence = EMassFragmentPresence::All;
+};
+
 
 class UMassEntityQueryBlueprintTransaction;
 USTRUCT(BlueprintType)
@@ -52,14 +79,15 @@ public:
 	// 	const EMassFragmentAccess AccessMode,
 	// 	const EMassFragmentPresence Presence = EMassFragmentPresence::All);
 	
-	// UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	// TArray<FMassRequirementComponentWrapper> TagRequirements; //Todo Add Wrapper Type
-
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	TArray<FMassRequirementComponentWrapper> FragmentRequirements;
+	TArray<FMassRequirementWrapper_Tag> TagRequirements;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	TArray<FMassRequirementWrapper_Fragment> FragmentRequirements;
 	
 	FMassEntityQuery* QueryRef;
-	
+
+	virtual void PreEditChange(FEditPropertyChain& PropertyAboutToChange) override;
+	virtual bool CanEditChange(const FEditPropertyChain& PropertyChain) const override;
 	virtual void PostEditChangeChainProperty(FPropertyChangedChainEvent& PropertyChangedEvent) override;
 
 	UFUNCTION(BlueprintCallable)
@@ -67,5 +95,6 @@ public:
 
 	UFUNCTION(BlueprintCallable)
 	void ForEachEntityChunk(const FMassProcessorExecWrapper& InExecWrapper, FExecuteOnChunk Function);
-
+	
+	// thread_local static FMassFragmentRequirementDescription PreEditRequirement; 
 };
