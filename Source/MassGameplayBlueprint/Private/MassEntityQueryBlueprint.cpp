@@ -55,6 +55,8 @@ void UMassEntityQueryBlueprintTransaction::RegisterQueryWithProcessor(UMassProce
 {
 	if(InProcessor==nullptr)
 		InProcessor = Cast<UMassProcessor>(QueryBlueprint.Transaction->GetOuter());
+	
+	QueryBlueprint.QueryInternal.Clear();
 	for (const auto& FragmentRequirement : QueryBlueprint.Transaction->FragmentRequirements)
 	{
 		QueryBlueprint.QueryInternal.AddRequirement(

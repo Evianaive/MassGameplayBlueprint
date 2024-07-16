@@ -15,6 +15,7 @@ UMassProcessorBlueprint::UMassProcessorBlueprint()
 void UMassProcessorBlueprint::PostCDOContruct()
 {
 	Super::PostCDOContruct();
+	ConfigureQueries();
 	// GetMutableDefault<UMassBlueprintSettings>()->BlueprintProcessorClasses.AddUnique(this->GetClass());
 	// GetMutableDefault<UMass>()
 }
