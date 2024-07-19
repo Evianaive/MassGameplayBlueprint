@@ -97,14 +97,14 @@ public:
 			Term->bPassedByReference = ContextTerm->bPassedByReference;
 			Term->AssociatedVarProperty = BoundProperty;
 /*Modify Property by Connected PinType*/
-			if(auto ArrayProperty = CastField<FArrayProperty>(Term->AssociatedVarProperty))
-			{
-				if(auto InnerStructProperty = CastField<FStructProperty>(ArrayProperty->Inner))
-				{
-					InnerStructProperty->Struct = Cast<UScriptStruct>(Net->PinType.PinSubCategoryObject);
-					InnerStructProperty->ElementSize = InnerStructProperty->Struct->GetStructureSize();
-				}
-			}
+			// if(auto ArrayProperty = CastField<FArrayProperty>(Term->AssociatedVarProperty))
+			// {
+			// 	if(auto InnerStructProperty = CastField<FStructProperty>(ArrayProperty->Inner))
+			// 	{
+			// 		InnerStructProperty->Struct = Cast<UScriptStruct>(Net->PinType.PinSubCategoryObject);
+			// 		InnerStructProperty->ElementSize = InnerStructProperty->Struct->GetStructureSize();
+			// 	}
+			// }
 			
 			Context.NetMap.Add(Net, Term);
 			Term->Context = ContextTerm;

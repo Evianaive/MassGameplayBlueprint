@@ -176,11 +176,8 @@ void UK2Node_GetArrayViewItemRef::ExpandNode(FKismetCompilerContext& CompilerCon
 {
 	Super::ExpandNode(CompilerContext, SourceGraph);
 	auto IndexPin = GetIndexPin();
-	auto ArrayViewPin = FindPinByPredicate([](const UEdGraphPin* InPin)
-	{
-		return InPin->PinType.PinCategory==UEdGraphSchema_K2::PC_Struct;
-	});
 	UEdGraphPin* OutStructPin = GetOutputPin();
+	auto ArrayViewPin = GetArrayViewPin();
 
 	UK2Node_GetArrayItem* GetArrayNode = CompilerContext.SpawnIntermediateNode<UK2Node_GetArrayItem>(this, SourceGraph);
 	// GetArrayNode->SetDesiredReturnType(true);

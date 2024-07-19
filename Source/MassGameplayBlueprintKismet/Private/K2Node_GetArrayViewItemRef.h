@@ -43,10 +43,17 @@ public:
 	//~ End UK2Node Interface_
 	bool bReturnByRefDesired = true;
 
+	/* used to fool blueprint compiler*/
+	UEdGraphPin* FakeArrayInputPin;
+
 	UEdGraphPin* GetOutputPin() const {return FindPinChecked(Output,EGPD_Output);};
 	UEdGraphPin* GetIndexPin() const {return FindPinByPredicate([](const UEdGraphPin* InPin)
 	{
 		return InPin->PinType.PinCategory==UEdGraphSchema_K2::PC_Int;
+	});};
+	UEdGraphPin* GetArrayViewPin() const {return FindPinByPredicate([](const UEdGraphPin* InPin)
+	{
+		return InPin->PinType.PinCategory==UEdGraphSchema_K2::PC_Struct;
 	});};
 	static inline FName Output = TEXT("Output");
 };
