@@ -28,7 +28,7 @@
 		{
 			"Name": "MassGameplayBlueprintEditor",
 			"Type": "Editor",
-			"LoadingPhase": "PreLoadingScreen"
+			"LoadingPhase": "PostEngineInit"
 		}
 	]
 }
