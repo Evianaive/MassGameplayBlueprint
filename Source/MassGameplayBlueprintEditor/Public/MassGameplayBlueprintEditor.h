@@ -14,4 +14,5 @@ public:
 	virtual void StartupModule() override;
 	virtual void ShutdownModule() override;
 	TSharedPtr< FMassProcessorBlueprintAutoManager > MassProcessorBlueprintAutoManager;
+	TSharedPtr<class FUserDefinedStructEditMassListener> MassSuperStructRestore;
 };

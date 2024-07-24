@@ -2,6 +2,7 @@
 
 #include "DetailLayoutBuilder.h"
 #include "StructViewerModule.h"
+#include "Engine/UserDefinedStruct.h"
 #include "Styling/SlateIconFinder.h"
 
 bool MassStructFilter::IsStructAllowed(const FStructViewerInitializationOptions& InInitOptions,
@@ -10,7 +11,7 @@ bool MassStructFilter::IsStructAllowed(const FStructViewerInitializationOptions&
 	if(InStruct->GetStructureSize()!=1)
 		return false;	
 	static FName ModulePath = "/Script/MassEntity";
-	if(!InStruct->GetPathName().Contains("Mass"))
+	if(!InStruct->GetName().Contains("Mass"))
 		return false;	
 	if(InStruct->GetStructPathName().GetPackageName()!=ModulePath)
 		return false;
@@ -26,7 +27,7 @@ bool MassStructFilter::IsUnloadedStructAllowed(const FStructViewerInitialization
 
 void FMassStructSelectExtenderCreator::OnUserDefinedStructEditorOpen(UObject* Object, IAssetEditorInstance* EditorInstance)
 {
-	UScriptStruct* EditStruct = Cast<UScriptStruct>(Object);
+	UUserDefinedStruct* EditStruct = Cast<UUserDefinedStruct>(Object);
 	if(!EditStruct)
 		return;
 	
@@ -56,7 +57,7 @@ void FMassStructSelectExtenderCreator::OnUserDefinedStructEditorOpen(UObject* Ob
 					.Text_Lambda([EditStruct]()
 					{
 						if(auto EditStructSuper = EditStruct->GetSuperStruct())						
-							return EditStructSuper->GetDisplayNameText();						
+							return EditStructSuper->GetDisplayNameText();
 						return FText::FromString(TEXT("No Parent"));
 					})
 					.ToolTipText(FText::FromString(TEXT("Super struct")))
@@ -75,8 +76,18 @@ void FMassStructSelectExtenderCreator::OnUserDefinedStructEditorOpen(UObject* Ob
 				FStructViewerModule& StructViewerModule = FModuleManager::LoadModuleChecked<FStructViewerModule>("StructViewer");
 				return StructViewerModule.CreateStructViewer(Options,FOnStructPicked::CreateLambda([EditStruct, ComboButton](const UScriptStruct* Struct)
 				{
+					// We don't need to clear member for tag because tag will not allocate
+					
+					// if(Struct == TBaseStructure<FMassTag>::Get())
+					// if(Struct->GetFName()==TEXT("MassTag"))
+					// {
+					// 	UUserDefinedStructEditorData* DuplicatedEditorData = CastChecked<UUserDefinedStructEditorData>(EditStruct->EditorData);
+					// 	DuplicatedEditorData->VariablesDescriptions.Reset();
+					// 	FStructureEditorUtils::OnStructureChanged(EditStruct,FStructureEditorUtils::AddedVariable);
+					// 	// DuplicatedEditorData->RecreateDefaultInstance();
+					// }
 					EditStruct->SetSuperStruct(const_cast<UScriptStruct*>(Struct));
-					EditStruct->Modify();					
+					EditStruct->Modify();
 					ComboButton->SetIsOpen(false);
 				}));
 			}));

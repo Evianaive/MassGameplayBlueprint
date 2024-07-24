@@ -3,8 +3,31 @@
 #include "MassGameplayBlueprintEditor.h"
 #include "MassProcessorBlueprintAutoManager.h"
 #include "MassStructFilter.h"
+#include "Kismet2/StructureEditorUtils.h"
 
 #define LOCTEXT_NAMESPACE "FMassGameplayBlueprintEditorModule"
+
+class FUserDefinedStructEditMassListener : public FStructureEditorUtils::FStructEditorManager::ListenerType
+{
+public:
+	virtual void PreChange(
+		const UUserDefinedStruct* Changed,
+		FStructureEditorUtils::EStructureEditorChangeInfo ChangedType) override
+	{
+		StructMap.Add(const_cast<UUserDefinedStruct*>(Changed),Changed->GetSuperStruct());
+	}
+	virtual void PostChange(
+		const UUserDefinedStruct* Changed,
+		FStructureEditorUtils::EStructureEditorChangeInfo ChangedType) override
+	{
+		if(auto Restore = StructMap.Find(Changed))
+		{
+			StructMap.Remove(Changed);
+			const_cast<UUserDefinedStruct*>(Changed)->SetSuperStruct(*Restore);
+		}
+	}
+	TMap<UUserDefinedStruct*,UStruct*> StructMap;
+};
 
 void FMassGameplayBlueprintEditorModule::StartupModule()
 {
@@ -14,6 +37,9 @@ void FMassGameplayBlueprintEditorModule::StartupModule()
 	GEditor->GetEditorSubsystem<UAssetEditorSubsystem>()
 	->OnAssetOpenedInEditor()
 	.AddStatic(FMassStructSelectExtenderCreator::OnUserDefinedStructEditorOpen);
+	
+	// FStructureEditorUtils::FStructEditorManager::Get().AddListener();
+	MassSuperStructRestore = MakeShareable(new FUserDefinedStructEditMassListener);
 }
 
 void FMassGameplayBlueprintEditorModule::ShutdownModule()
