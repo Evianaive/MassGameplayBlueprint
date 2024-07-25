@@ -2,7 +2,7 @@
 
 #include "EditorClassUtils.h"
 #include "MassBlueprintSettings.h"
-#include "MassProcessorBlueprint.h"
+#include "BlueprintClass/MassProcessorBlueprint.h"
 #include "AssetRegistry/AssetRegistryModule.h"
 #include "Editor/ClassViewer/Private/ClassViewerNode.h"
 #include "UObject/CoreRedirects.h"

@@ -3,9 +3,9 @@
 
 #include "MassBlueprintSettings.h"
 
-#include "MassBlueprintClassHelper.h"
+#include "Helpers/MassBlueprintClassHelper.h"
 #include "MassEntitySettings.h"
-#include "MassProcessorBlueprint.h"
+#include "BlueprintClass/MassProcessorBlueprint.h"
 
 UMassBlueprintSettings::UMassBlueprintSettings(const FObjectInitializer& ObjectInitializer)
 {

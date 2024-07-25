@@ -1,10 +1,10 @@
 ﻿// Fill out your copyright notice in the Description page of Project Settings.
 
 
-#include "MassBlueprintLibrary.h"
+#include "Helpers/MassBlueprintLibrary.h"
 
 #include "MassEntityConfigAsset.h"
-#include "MassEntityQueryBlueprint.h"
+#include "BlueprintClass/MassEntityQueryBlueprint.h"
 #include "MassExecutionContext.h"
 #include "MassSpawnerSubsystem.h"
 #include "Blueprint/BlueprintExceptionInfo.h"

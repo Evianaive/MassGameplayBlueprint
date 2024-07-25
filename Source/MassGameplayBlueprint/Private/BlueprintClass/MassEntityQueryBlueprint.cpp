@@ -1,7 +1,7 @@
 ﻿// Fill out your copyright notice in the Description page of Project Settings.
 
 
-#include "MassEntityQueryBlueprint.h"
+#include "BlueprintClass/MassEntityQueryBlueprint.h"
 
 #include "MassProcessor.h"
 

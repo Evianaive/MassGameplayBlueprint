@@ -4,10 +4,8 @@
 #include "K2Node_GetArrayViewItemRefCode.h"
 
 #include "EdGraphUtilities.h"
-#include "K2Node_BreakStructWithConvertMember.h"
 #include "KismetCompiledFunctionContext.h"
 #include "KismetCompiler.h"
-#include "MassBlueprintLibrary.h"
 
 
 template <typename Member>

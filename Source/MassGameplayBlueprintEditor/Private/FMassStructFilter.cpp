@@ -1,11 +1,11 @@
-﻿#include "MassStructFilter.h"
+﻿#include "FMassStructFilter.h"
 
 #include "DetailLayoutBuilder.h"
 #include "StructViewerModule.h"
 #include "Engine/UserDefinedStruct.h"
 #include "Styling/SlateIconFinder.h"
 
-bool MassStructFilter::IsStructAllowed(const FStructViewerInitializationOptions& InInitOptions,
+bool FMassStructFilter::IsStructAllowed(const FStructViewerInitializationOptions& InInitOptions,
 										const UScriptStruct* InStruct, TSharedRef<FStructViewerFilterFuncs> InFilterFuncs)
 {
 	if(InStruct->GetStructureSize()!=1)
@@ -19,7 +19,7 @@ bool MassStructFilter::IsStructAllowed(const FStructViewerInitializationOptions&
 	return true;
 }
 
-bool MassStructFilter::IsUnloadedStructAllowed(const FStructViewerInitializationOptions& InInitOptions,
+bool FMassStructFilter::IsUnloadedStructAllowed(const FStructViewerInitializationOptions& InInitOptions,
 	const FSoftObjectPath& InStructPath, TSharedRef<FStructViewerFilterFuncs> InFilterFuncs)
 {
 	return false;
@@ -69,7 +69,7 @@ void FMassStructSelectExtenderCreator::OnUserDefinedStructEditorOpen(UObject* Ob
 				FStructViewerInitializationOptions Options;
 				Options.Mode = EStructViewerMode::StructPicker;
 				Options.bShowNoneOption = true;
-				Options.StructFilter =  MakeShared<MassStructFilter>();
+				Options.StructFilter =  MakeShared<FMassStructFilter>();
 				Options.DisplayMode = EStructViewerDisplayMode::TreeView;
 				Options.SelectedStruct = reinterpret_cast<UScriptStruct*>(EditStruct->GetSuperStruct());
 				

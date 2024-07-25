@@ -2,7 +2,7 @@
 
 #include "MassGameplayBlueprintEditor.h"
 #include "MassProcessorBlueprintAutoManager.h"
-#include "MassStructFilter.h"
+#include "FMassStructFilter.h"
 #include "Kismet2/StructureEditorUtils.h"
 
 #define LOCTEXT_NAMESPACE "FMassGameplayBlueprintEditorModule"

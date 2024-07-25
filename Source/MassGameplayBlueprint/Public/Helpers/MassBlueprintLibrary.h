@@ -3,7 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "MassProcessorExecWrapper.h"
+#include "BlueprintClass/MassProcessorExecWrapper.h"
 #include "MassBlueprintLibrary.generated.h"
 
 

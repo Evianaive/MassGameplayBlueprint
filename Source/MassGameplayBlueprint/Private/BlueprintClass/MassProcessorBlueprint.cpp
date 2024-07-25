@@ -1,10 +1,10 @@
 ﻿// Fill out your copyright notice in the Description page of Project Settings.
 
 
-#include "MassProcessorBlueprint.h"
+#include "BlueprintClass/MassProcessorBlueprint.h"
 
 #include "MassEntityEditorSubsystem.h"
-#include "MassProcessorExecWrapper.h"
+#include "BlueprintClass/MassProcessorExecWrapper.h"
 
 UMassProcessorBlueprint::UMassProcessorBlueprint()
 {

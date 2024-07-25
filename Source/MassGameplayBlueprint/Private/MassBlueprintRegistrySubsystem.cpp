@@ -4,7 +4,7 @@
 #include "MassBlueprintRegistrySubsystem.h"
 
 #include "MassBlueprintSettings.h"
-#include "MassProcessorBlueprint.h"
+#include "BlueprintClass/MassProcessorBlueprint.h"
 #include "MassSimulationSubsystem.h"
 
 void UMassBlueprintRegistrySubsystem::Initialize(FSubsystemCollectionBase& Collection)

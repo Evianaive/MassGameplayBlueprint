@@ -1,9 +1,9 @@
 ﻿// Fill out your copyright notice in the Description page of Project Settings.
 
 
-#include "MassBlueprintClassHelper.h"
+#include "Helpers/MassBlueprintClassHelper.h"
 #include "MassEntitySettings.h"
-#include "MassProcessorBlueprint.h"
+#include "BlueprintClass/MassProcessorBlueprint.h"
 #include "RegisterBlueprintLibrary.h"
 
 

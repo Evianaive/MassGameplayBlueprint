@@ -9,7 +9,7 @@
 #include "K2Node_CallFunction.h"
 #include "K2Node_GetArrayItem.h"
 #include "KismetCompiler.h"
-#include "MassBlueprintLibrary.h"
+#include "Helpers/MassBlueprintLibrary.h"
 #include "SPinTypeSelector.h"
 #include "Kismet2/BlueprintEditorUtils.h"
 #include "Widgets/Images/SLayeredImage.h"
