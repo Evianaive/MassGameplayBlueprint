@@ -10,7 +10,7 @@
  * 
  */
 UCLASS()
-class MASSGAMEPLAYBLUEPRINTKISMET_API UK2Node_GetArrayViewItemRef : public UK2Node
+class MASSGAMEPLAYSCRIPTKISMET_API UK2Node_GetArrayViewItemRef : public UK2Node
 {
 	GENERATED_BODY()
 public:

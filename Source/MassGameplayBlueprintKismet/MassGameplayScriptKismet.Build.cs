@@ -2,9 +2,9 @@
 
 using UnrealBuildTool;
 
-public class MassGameplayBlueprintKismet : ModuleRules
+public class MassGameplayScriptKismet : ModuleRules
 {
-	public MassGameplayBlueprintKismet(ReadOnlyTargetRules Target) : base(Target)
+	public MassGameplayScriptKismet(ReadOnlyTargetRules Target) : base(Target)
 	{
 		PCHUsage = ModuleRules.PCHUsageMode.UseExplicitOrSharedPCHs;
 		// OverridePackageType = PackageOverrideType.GameUncookedOnly;
@@ -38,7 +38,7 @@ public class MassGameplayBlueprintKismet : ModuleRules
 				"Engine",
 				"Slate",
 				"SlateCore",
-				"MassGameplayBlueprint",
+				"MassGameplayScript",
 				"UnrealEd",
 				"BlueprintGraph",
 				"KismetCompiler", 

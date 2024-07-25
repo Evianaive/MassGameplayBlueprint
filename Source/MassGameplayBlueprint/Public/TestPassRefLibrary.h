@@ -20,7 +20,7 @@ struct FTestReturnByRef
  * 
  */
 UCLASS()
-class MASSGAMEPLAYBLUEPRINT_API UTestPassRefLibrary : public UBlueprintFunctionLibrary
+class MASSGAMEPLAYSCRIPT_API UTestPassRefLibrary : public UBlueprintFunctionLibrary
 {
 	GENERATED_BODY()
 public:

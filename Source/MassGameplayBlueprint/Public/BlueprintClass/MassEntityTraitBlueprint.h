@@ -11,7 +11,7 @@
  * 
  */
 UCLASS(Blueprintable, BlueprintType)
-class MASSGAMEPLAYBLUEPRINT_API UMassEntityTraitBlueprint : public UMassEntityTraitBase
+class MASSGAMEPLAYSCRIPT_API UMassEntityTraitBlueprint : public UMassEntityTraitBase
 {
 	GENERATED_BODY()
 public:

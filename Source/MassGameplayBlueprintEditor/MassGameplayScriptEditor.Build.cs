@@ -1,8 +1,8 @@
 ﻿using UnrealBuildTool;
 
-public class MassGameplayBlueprintEditor : ModuleRules
+public class MassGameplayScriptEditor : ModuleRules
 {
-    public MassGameplayBlueprintEditor(ReadOnlyTargetRules Target) : base(Target)
+    public MassGameplayScriptEditor(ReadOnlyTargetRules Target) : base(Target)
     {
         PCHUsage = ModuleRules.PCHUsageMode.UseExplicitOrSharedPCHs;
 
@@ -20,7 +20,7 @@ public class MassGameplayBlueprintEditor : ModuleRules
                 "Engine",
                 "Slate",
                 "SlateCore",
-                "MassGameplayBlueprint",
+                "MassGameplayScript",
                 "UnrealEd"
             }
         );

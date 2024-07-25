@@ -12,7 +12,7 @@
 
 struct FMassProcessorExecWrapper;
 UCLASS(Blueprintable,Abstract)
-class MASSGAMEPLAYBLUEPRINT_API UMassProcessorBlueprint : public UMassProcessor
+class MASSGAMEPLAYSCRIPT_API UMassProcessorBlueprint : public UMassProcessor
 {
 	GENERATED_BODY()
 public:

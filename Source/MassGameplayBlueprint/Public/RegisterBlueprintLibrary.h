@@ -10,7 +10,7 @@
  * 
  */
 UCLASS()
-class MASSGAMEPLAYBLUEPRINT_API URegisterBlueprintLibrary : public UBlueprintFunctionLibrary
+class MASSGAMEPLAYSCRIPT_API URegisterBlueprintLibrary : public UBlueprintFunctionLibrary
 {
 	GENERATED_BODY()
 

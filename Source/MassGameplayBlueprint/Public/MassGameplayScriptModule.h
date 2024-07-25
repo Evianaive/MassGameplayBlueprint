@@ -5,7 +5,7 @@
 #include "CoreMinimal.h"
 #include "Modules/ModuleManager.h"
 
-class FMassGameplayBlueprintModule : public IModuleInterface
+class FMassGameplayScriptModule : public IModuleInterface
 {
 public:
 

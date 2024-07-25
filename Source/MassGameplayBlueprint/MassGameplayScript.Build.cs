@@ -2,9 +2,9 @@
 
 using UnrealBuildTool;
 
-public class MassGameplayBlueprint : ModuleRules
+public class MassGameplayScript : ModuleRules
 {
-	public MassGameplayBlueprint(ReadOnlyTargetRules Target) : base(Target)
+	public MassGameplayScript(ReadOnlyTargetRules Target) : base(Target)
 	{
 		PCHUsage = ModuleRules.PCHUsageMode.UseExplicitOrSharedPCHs;
 		

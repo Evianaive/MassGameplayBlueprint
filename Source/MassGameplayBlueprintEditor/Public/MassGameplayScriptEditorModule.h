@@ -6,7 +6,7 @@
 #include "Modules/ModuleManager.h"
 
 class FMassProcessorBlueprintAutoManager;
-class FMassGameplayBlueprintEditorModule : public IModuleInterface
+class FMassGameplayScriptEditorModule : public IModuleInterface
 {
 public:
 

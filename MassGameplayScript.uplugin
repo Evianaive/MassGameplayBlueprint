@@ -16,17 +16,17 @@
 	"Installed": false,
 	"Modules": [
 		{
-			"Name": "MassGameplayBlueprint",
+			"Name": "MassGameplayScript",
 			"Type": "Runtime",
 			"LoadingPhase": "PreLoadingScreen"
 		},
 		{
-			"Name": "MassGameplayBlueprintKismet",
+			"Name": "MassGameplayScriptKismet",
 			"Type": "UncookedOnly",
 			"LoadingPhase": "PreLoadingScreen"
 		},
 		{
-			"Name": "MassGameplayBlueprintEditor",
+			"Name": "MassGameplayScriptEditor",
 			"Type": "Editor",
 			"LoadingPhase": "PostEngineInit"
 		}

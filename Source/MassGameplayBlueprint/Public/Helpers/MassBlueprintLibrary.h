@@ -63,7 +63,7 @@ class UMassEntityQueryBlueprint;
  * 
  */
 UCLASS()
-class MASSGAMEPLAYBLUEPRINT_API UMassBlueprintLibrary : public UBlueprintFunctionLibrary
+class MASSGAMEPLAYSCRIPT_API UMassBlueprintLibrary : public UBlueprintFunctionLibrary
 {
 	GENERATED_BODY()
 public:

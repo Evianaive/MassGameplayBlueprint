@@ -1,16 +1,16 @@
 ﻿// Copyright Epic Games, Inc. All Rights Reserved.
 
-#include "MassGameplayBlueprintKismet.h"
+#include "MassGameplayScriptKismetModule.h"
 
-#define LOCTEXT_NAMESPACE "FMassGameplayBlueprintKismetModule"
+#define LOCTEXT_NAMESPACE "FMassGameplayScriptKismetModule"
 
-void FMassGameplayBlueprintKismetModule::StartupModule()
+void FMassGameplayScriptKismetModule::StartupModule()
 {
 	// This code will execute after your module is loaded into memory; the exact timing is specified in the .uplugin file per-module
 	
 }
 
-void FMassGameplayBlueprintKismetModule::ShutdownModule()
+void FMassGameplayScriptKismetModule::ShutdownModule()
 {
 	// This function may be called during shutdown to clean up your module.  For modules that support dynamic reloading,
 	// we call this function before unloading the module.
@@ -18,4 +18,4 @@ void FMassGameplayBlueprintKismetModule::ShutdownModule()
 
 #undef LOCTEXT_NAMESPACE
 	
-IMPLEMENT_MODULE(FMassGameplayBlueprintKismetModule, MassGameplayBlueprintKismet)
+IMPLEMENT_MODULE(FMassGameplayScriptKismetModule, MassGameplayScriptKismet)

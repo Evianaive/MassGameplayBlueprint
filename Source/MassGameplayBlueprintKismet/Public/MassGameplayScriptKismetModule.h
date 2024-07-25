@@ -5,7 +5,7 @@
 #include "CoreMinimal.h"
 #include "Modules/ModuleManager.h"
 
-class FMassGameplayBlueprintKismetModule : public IModuleInterface
+class FMassGameplayScriptKismetModule : public IModuleInterface
 {
 public:
 

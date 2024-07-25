@@ -1,7 +1,7 @@
 ﻿#include "MassProcessorBlueprintAutoManager.h"
 
 #include "EditorClassUtils.h"
-#include "MassBlueprintSettings.h"
+#include "MassGameplayScriptSettings.h"
 #include "BlueprintClass/MassProcessorBlueprint.h"
 #include "AssetRegistry/AssetRegistryModule.h"
 #include "Editor/ClassViewer/Private/ClassViewerNode.h"
@@ -63,7 +63,7 @@ void FMassProcessorBlueprintAutoManager::AddAsset(const FAssetData& InAddedAsset
 		if(UClass* Class = FindObject<UClass>(nullptr, *ClassPath.ToString()))
 		{
 			if(Class->IsChildOf(UMassProcessorBlueprint::StaticClass()))
-				GetMutableDefault<UMassBlueprintSettings>()->AddBlueprintProcessorClass(Class);			
+				GetMutableDefault<UMassGameplayScriptSettings>()->AddBlueprintProcessorClass(Class);			
 		}		
 		// TSharedPtr<FClassViewerNode>& Node = ClassPathToNode.FindOrAdd(ClassPath);
 		// InAddedAssetData.GetSoftObjectPath()
@@ -82,7 +82,7 @@ void FMassProcessorBlueprintAutoManager::RemoveAsset(const FAssetData& InRemoved
 
 	if(!ClassPath.IsNull())
 	{
-		GetMutableDefault<UMassBlueprintSettings>()->RemoveBlueprintProcessorAsset(ClassPath.ToString());
+		GetMutableDefault<UMassGameplayScriptSettings>()->RemoveBlueprintProcessorAsset(ClassPath.ToString());
 	}
 }
 
@@ -130,7 +130,7 @@ void FMassProcessorBlueprintAutoManager::UpdateBlueprintProcessor()
 			
 			if(const auto Class = LoadObject<UClass>(nullptr, *ClassPath.ToString()))
 			{
-				GetMutableDefault<UMassBlueprintSettings>()->AddBlueprintProcessorClass(Class);	
+				GetMutableDefault<UMassGameplayScriptSettings>()->AddBlueprintProcessorClass(Class);	
 			}	
 		}
 	}
@@ -147,7 +147,7 @@ void FMassProcessorBlueprintAutoManager::UpdateBlueprintProcessor()
 			FixupClassCoreRedirects(ClassPathNameFromAssetPath);
 			if(UClass* Class = FindObject<UClass>(nullptr, *ClassPathNameFromAssetPath.ToString()))
 			{
-				GetMutableDefault<UMassBlueprintSettings>()->AddBlueprintProcessorClass(Class);			
+				GetMutableDefault<UMassGameplayScriptSettings>()->AddBlueprintProcessorClass(Class);			
 			}
 		}
 	}

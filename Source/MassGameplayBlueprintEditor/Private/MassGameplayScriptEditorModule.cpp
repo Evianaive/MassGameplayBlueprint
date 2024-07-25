@@ -1,11 +1,11 @@
 ﻿// Copyright Epic Games, Inc. All Rights Reserved.
 
-#include "MassGameplayBlueprintEditor.h"
+#include "MassGameplayScriptEditorModule.h"
 #include "MassProcessorBlueprintAutoManager.h"
 #include "FMassStructFilter.h"
 #include "Kismet2/StructureEditorUtils.h"
 
-#define LOCTEXT_NAMESPACE "FMassGameplayBlueprintEditorModule"
+#define LOCTEXT_NAMESPACE "FMassGameplayScriptEditorModule"
 
 class FUserDefinedStructEditMassListener : public FStructureEditorUtils::FStructEditorManager::ListenerType
 {
@@ -29,7 +29,7 @@ public:
 	TMap<UUserDefinedStruct*,UStruct*> StructMap;
 };
 
-void FMassGameplayBlueprintEditorModule::StartupModule()
+void FMassGameplayScriptEditorModule::StartupModule()
 {
 	// This code will execute after your module is loaded into memory; the exact timing is specified in the .uplugin file per-module
 	MassProcessorBlueprintAutoManager = MakeShareable(new FMassProcessorBlueprintAutoManager);
@@ -42,7 +42,7 @@ void FMassGameplayBlueprintEditorModule::StartupModule()
 	MassSuperStructRestore = MakeShareable(new FUserDefinedStructEditMassListener);
 }
 
-void FMassGameplayBlueprintEditorModule::ShutdownModule()
+void FMassGameplayScriptEditorModule::ShutdownModule()
 {
 	// This function may be called during shutdown to clean up your module.  For modules that support dynamic reloading,
 	// we call this function before unloading the module.
@@ -50,4 +50,4 @@ void FMassGameplayBlueprintEditorModule::ShutdownModule()
 
 #undef LOCTEXT_NAMESPACE
 	
-IMPLEMENT_MODULE(FMassGameplayBlueprintEditorModule, MassGameplayBlueprintEditor)
+IMPLEMENT_MODULE(FMassGameplayScriptEditorModule, MassGameplayScriptEditor)

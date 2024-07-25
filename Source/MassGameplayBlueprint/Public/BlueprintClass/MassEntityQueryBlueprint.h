@@ -68,7 +68,7 @@ struct FMassEntityQueryBlueprint
 
 // DefaultToInstanced
 UCLASS(BlueprintType, editinlinenew, Within = MassProcessorBlueprint)
-class MASSGAMEPLAYBLUEPRINT_API UMassEntityQueryBlueprintTransaction : public UObject
+class MASSGAMEPLAYSCRIPT_API UMassEntityQueryBlueprintTransaction : public UObject
 {
 	GENERATED_BODY()
 

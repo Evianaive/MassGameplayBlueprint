@@ -1,16 +1,16 @@
 ﻿// Fill out your copyright notice in the Description page of Project Settings.
 
 
-#include "MassBlueprintRegistrySubsystem.h"
+#include "MassProcessorBlueprintRegistrySubsystem.h"
 
-#include "MassBlueprintSettings.h"
+#include "MassGameplayScriptSettings.h"
 #include "BlueprintClass/MassProcessorBlueprint.h"
 #include "MassSimulationSubsystem.h"
 
-void UMassBlueprintRegistrySubsystem::Initialize(FSubsystemCollectionBase& Collection)
+void UMassProcessorBlueprintRegistrySubsystem::Initialize(FSubsystemCollectionBase& Collection)
 {
 	UMassSimulationSubsystem* SimulationSubsystem = Collection.InitializeDependency<UMassSimulationSubsystem>();
-	const auto& ProcessorClasses = GetDefault<UMassBlueprintSettings>()->BlueprintProcessorClasses;
+	const auto& ProcessorClasses = GetDefault<UMassGameplayScriptSettings>()->BlueprintProcessorClasses;
 	for(const auto& ProcessorClass:ProcessorClasses)
 	{
 		if(const auto Class = ProcessorClass.TryLoadClass<UMassProcessorBlueprint>())

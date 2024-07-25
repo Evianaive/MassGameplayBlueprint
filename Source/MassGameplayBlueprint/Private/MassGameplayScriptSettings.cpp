@@ -1,46 +1,46 @@
 ﻿// Fill out your copyright notice in the Description page of Project Settings.
 
 
-#include "MassBlueprintSettings.h"
+#include "MassGameplayScriptSettings.h"
 
 #include "Helpers/MassBlueprintClassHelper.h"
 #include "MassEntitySettings.h"
 #include "BlueprintClass/MassProcessorBlueprint.h"
 
-UMassBlueprintSettings::UMassBlueprintSettings(const FObjectInitializer& ObjectInitializer)
+UMassGameplayScriptSettings::UMassGameplayScriptSettings(const FObjectInitializer& ObjectInitializer)
 {
-	FCoreDelegates::OnPostEngineInit.AddUObject(this, &UMassBlueprintSettings::OnPostEngineInit);
+	FCoreDelegates::OnPostEngineInit.AddUObject(this, &UMassGameplayScriptSettings::OnPostEngineInit);
 }
 
-void UMassBlueprintSettings::AddBlueprintProcessorClass(TSubclassOf<UMassProcessorBlueprint> Class)
+void UMassGameplayScriptSettings::AddBlueprintProcessorClass(TSubclassOf<UMassProcessorBlueprint> Class)
 {
 	if(FMassBlueprintClassHelper::IsSkeletonClass(Class))
 		return;
 	BlueprintProcessorClasses.AddUnique(Class->GetClassPathName().ToString());
 }
 
-void UMassBlueprintSettings::RemoveBlueprintProcessorAsset(const FSoftClassPath& ClassPath)
+void UMassGameplayScriptSettings::RemoveBlueprintProcessorAsset(const FSoftClassPath& ClassPath)
 {
 	BlueprintProcessorClasses.Remove(ClassPath);
 }
 
-void UMassBlueprintSettings::PostEditChangeProperty(FPropertyChangedEvent& PropertyChangedEvent)
+void UMassGameplayScriptSettings::PostEditChangeProperty(FPropertyChangedEvent& PropertyChangedEvent)
 {
 	Super::PostEditChangeProperty(PropertyChangedEvent);
 	OnSettingsChange.Broadcast(PropertyChangedEvent);
 }
 
-void UMassBlueprintSettings::PostEditChangeChainProperty(FPropertyChangedChainEvent& PropertyChangedEvent)
+void UMassGameplayScriptSettings::PostEditChangeChainProperty(FPropertyChangedChainEvent& PropertyChangedEvent)
 {
 	Super::PostEditChangeChainProperty(PropertyChangedEvent);
 }
 
-void UMassBlueprintSettings::BeginDestroy()
+void UMassGameplayScriptSettings::BeginDestroy()
 {
 	Super::BeginDestroy();
 }
 
-void UMassBlueprintSettings::OnPostEngineInit()
+void UMassGameplayScriptSettings::OnPostEngineInit()
 {
 	// bEngineInitialized = true;
 	// for(auto Class : BlueprintProcessorClasses)

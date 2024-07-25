@@ -5,17 +5,17 @@
 #include "CoreMinimal.h"
 #include "MassProcessingTypes.h"
 #include "MassSettings.h"
-#include "MassBlueprintSettings.generated.h"
+#include "MassGameplayScriptSettings.generated.h"
 
-#define GET_MASS_BP_CONFIG_VALUE(a) (GetMutableDefault<UMassBlueprintSettings>()->a)
+#define GET_MASS_BP_CONFIG_VALUE(a) (GetMutableDefault<UMassGameplayScriptSettings>()->a)
 
 class UMassProcessorBlueprint;
 struct FPropertyChangedEvent;
 /**
  * Implements the settings for MassBlueprint plugin
  */
-UCLASS(config = MassBlueprint, defaultconfig, DisplayName = "Mass Blueprint")
-class MASSGAMEPLAYBLUEPRINT_API UMassBlueprintSettings : public UMassModuleSettings
+UCLASS(config = MassGameplayScript, defaultconfig, DisplayName = "Mass Gameplay Script")
+class MASSGAMEPLAYSCRIPT_API UMassGameplayScriptSettings : public UMassModuleSettings
 {
 	GENERATED_BODY()
 public:
@@ -24,7 +24,7 @@ public:
 #endif // WITH_EDITORONLY_DATA
 	DECLARE_MULTICAST_DELEGATE(FOnInitialized);
 
-	UMassBlueprintSettings(const FObjectInitializer& ObjectInitializer = FObjectInitializer::Get());
+	UMassGameplayScriptSettings(const FObjectInitializer& ObjectInitializer = FObjectInitializer::Get());
 	static FOnInitialized& GetOnInitializedEvent() { return GET_MASS_BP_CONFIG_VALUE(OnInitializedEvent); }
 	void AddBlueprintProcessorClass(TSubclassOf<UMassProcessorBlueprint> Class);
 	void RemoveBlueprintProcessorAsset(const FSoftClassPath& ClassPath);
