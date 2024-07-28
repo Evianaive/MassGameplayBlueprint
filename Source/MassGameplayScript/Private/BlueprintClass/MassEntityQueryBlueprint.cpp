@@ -25,29 +25,29 @@ bool UMassEntityQueryBlueprintTransaction::CanEditChange(const FEditPropertyChai
 
 void UMassEntityQueryBlueprintTransaction::PostEditChangeChainProperty(FPropertyChangedChainEvent& PropertyChangedEvent)
 {
-	static FName StructName = GET_MEMBER_NAME_CHECKED(FMassRequirementWrapper_Fragment,StructType);
-	if( StructName == PropertyChangedEvent.Property->GetFName())
-	{
-		static FName FragmentRequireName = GET_MEMBER_NAME_CHECKED(UMassEntityQueryBlueprintTransaction,FragmentRequirements);
-		static FName TagRequireName = GET_MEMBER_NAME_CHECKED(UMassEntityQueryBlueprintTransaction,TagRequirements);
-
-		auto CheckValid = [&](auto& Requirements, UScriptStruct* CheckStruct, const FName& Name)
-		{
-			const int32 RequireArrayIndex = PropertyChangedEvent.GetArrayIndex(Name.ToString());
-			if(RequireArrayIndex == -1)
-				return false;			
-			if(!Requirements[RequireArrayIndex].StructType->IsChildOf(CheckStruct))
-			{
-				// Todo Set to Old Data If Failed
-				Requirements[RequireArrayIndex].StructType = nullptr;
-			}
-			return true;			
-		};
-		if(CheckValid(FragmentRequirements,FMassFragment::StaticStruct(),FragmentRequireName))
-			return;
-		if(CheckValid(TagRequirements,FMassTag::StaticStruct(),TagRequireName))
-			return;
-	}
+	// static FName StructName = GET_MEMBER_NAME_CHECKED(FMassTagRequirementDescription,StructType);
+	// if( StructName == PropertyChangedEvent.Property->GetFName())
+	// {
+	// 	static FName FragmentRequireName = GET_MEMBER_NAME_CHECKED(UMassEntityQueryBlueprintTransaction,FragmentRequirements);
+	// 	static FName TagRequireName = GET_MEMBER_NAME_CHECKED(UMassEntityQueryBlueprintTransaction,TagRequirements);
+	//
+	// 	auto CheckValid = [&](auto& Requirements, UScriptStruct* CheckStruct, const FName& Name)
+	// 	{
+	// 		const int32 RequireArrayIndex = PropertyChangedEvent.GetArrayIndex(Name.ToString());
+	// 		if(RequireArrayIndex == -1)
+	// 			return false;			
+	// 		if(!Requirements[RequireArrayIndex].StructType->IsChildOf(CheckStruct))
+	// 		{
+	// 			// Todo Set to Old Data If Failed
+	// 			Requirements[RequireArrayIndex].StructType = nullptr;
+	// 		}
+	// 		return true;			
+	// 	};
+	// 	if(CheckValid(FragmentRequirements,FMassFragment::StaticStruct(),FragmentRequireName))
+	// 		return;
+	// 	if(CheckValid(TagRequirements,FMassTag::StaticStruct(),TagRequireName))
+	// 		return;
+	// }
 	UObject::PostEditChangeChainProperty(PropertyChangedEvent);
 }
 

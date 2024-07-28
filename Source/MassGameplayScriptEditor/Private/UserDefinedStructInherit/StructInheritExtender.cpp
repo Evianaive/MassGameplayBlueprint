@@ -1,31 +1,13 @@
-﻿#include "FMassStructFilter.h"
+﻿#include "StructInheritExtender.h"
 
 #include "DetailLayoutBuilder.h"
 #include "StructViewerModule.h"
 #include "Engine/UserDefinedStruct.h"
 #include "Styling/SlateIconFinder.h"
 
-bool FMassStructFilter::IsStructAllowed(const FStructViewerInitializationOptions& InInitOptions,
-										const UScriptStruct* InStruct, TSharedRef<FStructViewerFilterFuncs> InFilterFuncs)
-{
-	if(InStruct->GetStructureSize()!=1)
-		return false;	
-	static FName ModulePath = "/Script/MassEntity";
-	if(!InStruct->GetName().Contains("Mass"))
-		return false;	
-	if(InStruct->GetStructPathName().GetPackageName()!=ModulePath)
-		return false;
-	
-	return true;
-}
+FName FStructEditorExtenderCreator_MassSelect::SuperStructMetaData = "SuperStruct";
 
-bool FMassStructFilter::IsUnloadedStructAllowed(const FStructViewerInitializationOptions& InInitOptions,
-	const FSoftObjectPath& InStructPath, TSharedRef<FStructViewerFilterFuncs> InFilterFuncs)
-{
-	return false;
-}
-
-void FMassStructSelectExtenderCreator::OnUserDefinedStructEditorOpen(UObject* Object, IAssetEditorInstance* EditorInstance)
+void FStructEditorExtenderCreator_MassSelect::OnUserDefinedStructEditorOpen(UObject* Object, IAssetEditorInstance* EditorInstance, TSharedPtr<IStructViewerFilter> InFilter)
 {
 	UUserDefinedStruct* EditStruct = Cast<UUserDefinedStruct>(Object);
 	if(!EditStruct)
@@ -64,19 +46,19 @@ void FMassStructSelectExtenderCreator::OnUserDefinedStructEditorOpen(UObject* Ob
 					.Font(IDetailLayoutBuilder::GetDetailFont())
 				]
 			];
-			ComboButton->SetOnGetMenuContent(FOnGetContent::CreateLambda([EditStruct, ComboButton]()
+			ComboButton->SetOnGetMenuContent(FOnGetContent::CreateLambda([EditStruct, ComboButton, InFilter]()
 			{
 				FStructViewerInitializationOptions Options;
 				Options.Mode = EStructViewerMode::StructPicker;
 				Options.bShowNoneOption = true;
-				Options.StructFilter =  MakeShared<FMassStructFilter>();
+				Options.StructFilter =  InFilter;
 				Options.DisplayMode = EStructViewerDisplayMode::TreeView;
 				Options.SelectedStruct = reinterpret_cast<UScriptStruct*>(EditStruct->GetSuperStruct());
 				
 				FStructViewerModule& StructViewerModule = FModuleManager::LoadModuleChecked<FStructViewerModule>("StructViewer");
 				return StructViewerModule.CreateStructViewer(Options,FOnStructPicked::CreateLambda([EditStruct, ComboButton](const UScriptStruct* Struct)
 				{
-					// We don't need to clear member for tag because tag will not allocate
+					// We don't need to clear member for FMassTag because FMassTag will not allocate
 					
 					// if(Struct == TBaseStructure<FMassTag>::Get())
 					// if(Struct->GetFName()==TEXT("MassTag"))
@@ -86,7 +68,14 @@ void FMassStructSelectExtenderCreator::OnUserDefinedStructEditorOpen(UObject* Ob
 					// 	FStructureEditorUtils::OnStructureChanged(EditStruct,FStructureEditorUtils::AddedVariable);
 					// 	// DuplicatedEditorData->RecreateDefaultInstance();
 					// }
+					
 					EditStruct->SetSuperStruct(const_cast<UScriptStruct*>(Struct));
+					if(auto MetaData = EditStruct->GetOutermost()->GetMetaData())
+					{
+						// Todo make this string static 
+						MetaData->SetValue(EditStruct,TEXT("SuperStruct"),*Struct->GetPathName());
+						// Metadata->ObjectMetaDataMap
+					}
 					EditStruct->Modify();
 					ComboButton->SetIsOpen(false);
 				}));

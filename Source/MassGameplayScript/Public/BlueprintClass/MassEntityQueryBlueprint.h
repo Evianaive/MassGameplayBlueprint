@@ -10,47 +10,41 @@
 #include "MassEntityQueryBlueprint.generated.h"
 
 
+enum class EMassFragmentAccess : uint8;
 #if !CPP   //noexport class
-USTRUCT(noexport, BlueprintType, BlueprintInternalUseOnly)
+USTRUCT(noexport, BlueprintType)
+struct FMassStructSelect
+{
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	TObjectPtr<UScriptStruct> StructType;
+};
+
+USTRUCT(noexport, BlueprintType)
 struct FMassFragmentRequirementDescription
 {
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (MetaStruct = "/Script/MassEntity.MassFragment"))
-	const UScriptStruct* StructType;
+	FMassStructSelect StructType;
 	UPROPERTY(EditAnywhere)
 	EMassFragmentAccess AccessMode = EMassFragmentAccess::ReadOnly;
 	UPROPERTY(EditAnywhere)
 	EMassFragmentPresence Presence = EMassFragmentPresence::All;
 };
 
-#endif
-/**
- * 
- */
-/* Same Struct in Engine Plugin is FMassFragmentRequirementDescription, we can also export it in MassNoExportTypes.h*/
-USTRUCT(BlueprintType)
-struct FMassRequirementWrapper_Fragment
+USTRUCT(noexport, BlueprintType)
+struct FMassTagRequirementDescription
 {
-	GENERATED_BODY()
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (MetaStruct = "/Script/MassEntity.MassFragment"))
-	TObjectPtr<UScriptStruct> StructType;	
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	EMassFragmentAccess AccessMode = EMassFragmentAccess::ReadOnly;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	EMassFragmentPresence Presence = EMassFragmentPresence::All;
-};
-
-USTRUCT(BlueprintType)
-struct FMassRequirementWrapper_Tag
-{
-	GENERATED_BODY()
-
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (MetaStruct = "/Script/MassEntity.MassTag"))
-	TObjectPtr<UScriptStruct> StructType;
+	FMassStructSelect StructType;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	EMassFragmentPresence Presence = EMassFragmentPresence::All;
 };
+#endif
 
+struct FMassTagRequirementDescription
+{
+	TObjectPtr<UScriptStruct> StructType;
+	EMassFragmentPresence Presence = EMassFragmentPresence::All;
+};
 
 class UMassEntityQueryBlueprintTransaction;
 USTRUCT(BlueprintType)
@@ -80,9 +74,9 @@ public:
 	// 	const EMassFragmentPresence Presence = EMassFragmentPresence::All);
 	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	TArray<FMassRequirementWrapper_Tag> TagRequirements;
+	TArray<FMassTagRequirementDescription> TagRequirements;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	TArray<FMassRequirementWrapper_Fragment> FragmentRequirements;
+	TArray<FMassFragmentRequirementDescription> FragmentRequirements;
 	
 	FMassEntityQuery* QueryRef;
 

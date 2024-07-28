@@ -2,7 +2,9 @@
 
 #include "MassGameplayScriptEditorModule.h"
 #include "MassProcessorBlueprintAutoManager.h"
-#include "FMassStructFilter.h"
+#include "UserDefinedStructInherit/StructInheritExtender.h"
+#include "UserDefinedStructInherit/MassBasicStructFilter.h"
+#include "Customization/MassStructSelectDetails.h"
 #include "Kismet2/StructureEditorUtils.h"
 
 #define LOCTEXT_NAMESPACE "FMassGameplayScriptEditorModule"
@@ -32,14 +34,25 @@ public:
 void FMassGameplayScriptEditorModule::StartupModule()
 {
 	// This code will execute after your module is loaded into memory; the exact timing is specified in the .uplugin file per-module
-	MassProcessorBlueprintAutoManager = MakeShareable(new FMassProcessorBlueprintAutoManager);
+	{
+		MassProcessorBlueprintAutoManager = MakeShareable(new FMassProcessorBlueprintAutoManager);
+	}	
+	{
+		TSharedPtr<IStructViewerFilter> StructFilter = MakeShared<FMassBasicStructFilter>();		
+		GEditor->GetEditorSubsystem<UAssetEditorSubsystem>()
+		->OnAssetOpenedInEditor()
+		.AddStatic(&FStructEditorExtenderCreator_MassSelect::OnUserDefinedStructEditorOpen,StructFilter);
 	
-	GEditor->GetEditorSubsystem<UAssetEditorSubsystem>()
-	->OnAssetOpenedInEditor()
-	.AddStatic(FMassStructSelectExtenderCreator::OnUserDefinedStructEditorOpen);
-	
-	// FStructureEditorUtils::FStructEditorManager::Get().AddListener();
-	MassSuperStructRestore = MakeShareable(new FUserDefinedStructEditMassListener);
+		// FStructureEditorUtils::FStructEditorManager::Get().AddListener();
+		MassSuperStructRestore = MakeShareable(new FUserDefinedStructEditMassListener);
+		
+		// Allow save package meta data to UUserDefinedStruct FAssetData TagValues
+		UObject::GetMetaDataTagsForAssetRegistry().Add(FStructEditorExtenderCreator_MassSelect::SuperStructMetaData);
+	}
+	{
+		FPropertyEditorModule& PropertyModule = FModuleManager::GetModuleChecked<FPropertyEditorModule>("PropertyEditor");
+		PropertyModule.RegisterCustomPropertyTypeLayout("MassStructSelect", FOnGetPropertyTypeCustomizationInstance::CreateStatic(&FMassStructSelectDetails::MakeInstance));
+	}
 }
 
 void FMassGameplayScriptEditorModule::ShutdownModule()

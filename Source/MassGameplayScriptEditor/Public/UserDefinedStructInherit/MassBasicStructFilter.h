@@ -1,18 +1,11 @@
 ﻿#pragma once
-#include "StructViewerFilter.h"
+#include "ZeroSizeStructFilter.h"
 
-class FMassStructFilter : public IStructViewerFilter
+class MASSGAMEPLAYSCRIPTEDITOR_API FMassBasicStructFilter : public FZeroSizeStructFilter
 {
 public:
-	FMassStructFilter(){};
-	virtual ~FMassStructFilter() override {};
+	FMassBasicStructFilter(){};
+	virtual ~FMassBasicStructFilter() override {};
 	virtual bool IsStructAllowed(const FStructViewerInitializationOptions& InInitOptions, const UScriptStruct* InStruct, TSharedRef<FStructViewerFilterFuncs> InFilterFuncs) override;
 	virtual bool IsUnloadedStructAllowed(const FStructViewerInitializationOptions& InInitOptions, const FSoftObjectPath& InStructPath, TSharedRef<FStructViewerFilterFuncs> InFilterFuncs) override;
-};
-
-class FMassStructSelectExtenderCreator
-{
-public:
-	FMassStructSelectExtenderCreator(){};
-	static void OnUserDefinedStructEditorOpen(UObject* Object, IAssetEditorInstance* EditorInstance);
 };
