@@ -10,7 +10,7 @@
  * 
  */
 
-struct FMassProcessorExecWrapper;
+struct FMassExecutionContextWrapper;
 UCLASS(Blueprintable,Abstract)
 class MASSGAMEPLAYSCRIPT_API UMassProcessorBlueprint : public UMassProcessor
 {
@@ -27,7 +27,7 @@ public:
 	
 	virtual void Execute(FMassEntityManager& EntityManager, FMassExecutionContext& Context) override;
 	UFUNCTION(BlueprintImplementableEvent)
-	void ExecuteBP(const FMassProcessorExecWrapper& ExecWrapper);
+	void ExecuteBP(const FMassExecutionContextWrapper& ExecWrapper);
 
 	// UPROPERTY(EditAnywhere,Instanced,EditInline)
 	

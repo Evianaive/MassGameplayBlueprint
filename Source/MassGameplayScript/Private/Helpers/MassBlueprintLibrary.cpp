@@ -4,7 +4,7 @@
 #include "Helpers/MassBlueprintLibrary.h"
 
 #include "MassEntityConfigAsset.h"
-#include "BlueprintClass/MassEntityQueryBlueprint.h"
+#include "BlueprintClass/MassEntityQueryWrapper.h"
 #include "MassExecutionContext.h"
 #include "MassSpawnerSubsystem.h"
 #include "Blueprint/BlueprintExceptionInfo.h"
@@ -34,12 +34,12 @@ FArrayViewBlueprint::~FArrayViewBlueprint()
 	ArrayView.~TArrayView();
 }
 
-int32 UMassBlueprintLibrary::GetNumEntities(const FMassProcessorExecWrapper& Wrapper)
+int32 UMassBlueprintLibrary::GetNumEntities(const FMassExecutionContextWrapper& Wrapper)
 {
 	return Wrapper.Context->GetNumEntities();
 }
 
-bool UMassBlueprintLibrary::GetMutableFragmentView(const FMassProcessorExecWrapper& Wrapper, const UScriptStruct* Struct, FArrayViewBlueprint& OutArrayView)
+bool UMassBlueprintLibrary::GetMutableFragmentView(const FMassExecutionContextWrapper& Wrapper, const UScriptStruct* Struct, FArrayViewBlueprint& OutArrayView)
 {
 	auto FragmentView = Wrapper.Context->GetMutableFragmentView(Struct);
 
@@ -186,6 +186,46 @@ DEFINE_FUNCTION(UMassBlueprintLibrary::execGetArrayFromView)
 		Stack.MostRecentPropertyAddress = (uint8*)&ArrayView.GetAsArray();
 	}
 	P_NATIVE_END;
+}
+
+void UMassBlueprintLibrary::RegisterQueryWithProcessor(UMassProcessor* InProcessor,
+	FMassEntityQueryWrapper& QueryBlueprint)
+{
+	if(InProcessor==nullptr)
+	{
+		// Todo Waring by dialog
+		return;
+	}	
+	QueryBlueprint.QueryInternal.Clear();
+	for (const auto& FragmentRequirement : QueryBlueprint.Transaction.FragmentRequirements)
+	{
+		QueryBlueprint.QueryInternal.AddRequirement(
+			FragmentRequirement.StructType,
+			FragmentRequirement.AccessMode,
+			FragmentRequirement.Presence);
+	}
+	for (const auto& TagRequirement : QueryBlueprint.Transaction.TagRequirements)
+	{
+		QueryBlueprint.QueryInternal.AddTagRequirement(
+			*TagRequirement.StructType,
+			TagRequirement.Presence);
+	}
+	if(!InProcessor)
+		return;
+	QueryBlueprint.QueryInternal.RegisterWithProcessor(*InProcessor);
+}
+
+void UMassBlueprintLibrary::ForEachEntityChunk(FMassEntityQueryWrapper& QueryWrapper,
+	const FMassExecutionContextWrapper& InExecWrapper, FExecuteOnChunk Function)
+{
+	QueryWrapper.QueryInternal.ForEachEntityChunk(
+		*InExecWrapper.EntityManager,
+		*InExecWrapper.Context,
+		[&](FMassExecutionContext& Context)
+		{
+			Function.Execute(FMassExecutionContextWrapper{*InExecWrapper.EntityManager,Context});
+		}
+	);
 }
 
 #undef LOCTEXT_NAMESPACE

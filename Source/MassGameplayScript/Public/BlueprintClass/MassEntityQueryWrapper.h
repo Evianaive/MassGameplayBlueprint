@@ -4,10 +4,10 @@
 
 #include "CoreMinimal.h"
 #include "MassEntityQuery.h"
-#include "MassProcessorExecWrapper.h"
+#include "MassExecutionContextWrapper.h"
 #include "UObject/Object.h"
 #include "MassNoExprotTypes/MassNoExportTypes.h"
-#include "MassEntityQueryBlueprint.generated.h"
+#include "MassEntityQueryWrapper.generated.h"
 
 
 enum class EMassFragmentAccess : uint8;
@@ -46,49 +46,26 @@ struct FMassTagRequirementDescription
 	EMassFragmentPresence Presence = EMassFragmentPresence::All;
 };
 
-class UMassEntityQueryBlueprintTransaction;
 USTRUCT(BlueprintType)
-struct FMassEntityQueryBlueprint
+struct MASSGAMEPLAYSCRIPT_API FMassEntityQueryBlueprintTransaction
 {
 	GENERATED_BODY()
-
-	// Mark: MassEntityQuery must be contained in memory of MassProcessor 
-	UPROPERTY()
-	FMassEntityQuery QueryInternal;
-	// UPROPERTY(EditAnywhere,Instanced,BlueprintReadWrite,meta=(EditInline))
-	UPROPERTY(EditAnywhere,Instanced,BlueprintReadWrite)
-	TObjectPtr<UMassEntityQueryBlueprintTransaction> Transaction;
-};
-
-// DefaultToInstanced
-UCLASS(BlueprintType, editinlinenew, Within = MassProcessorBlueprint)
-class MASSGAMEPLAYSCRIPT_API UMassEntityQueryBlueprintTransaction : public UObject
-{
-	GENERATED_BODY()
-
-public:
-	// UFUNCTION(BlueprintCallable)
-	// void AddRequirement(
-	// 	const UScriptStruct* FragmentType,
-	// 	const EMassFragmentAccess AccessMode,
-	// 	const EMassFragmentPresence Presence = EMassFragmentPresence::All);
 	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	TArray<FMassTagRequirementDescription> TagRequirements;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	TArray<FMassFragmentRequirementDescription> FragmentRequirements;
 	
-	FMassEntityQuery* QueryRef;
-
-	virtual void PreEditChange(FEditPropertyChain& PropertyAboutToChange) override;
-	virtual bool CanEditChange(const FEditPropertyChain& PropertyChain) const override;
-	virtual void PostEditChangeChainProperty(FPropertyChangedChainEvent& PropertyChangedEvent) override;
-
-	UFUNCTION(BlueprintCallable)
-	static void RegisterQueryWithProcessor(UMassProcessor* InProcessor, UPARAM(ref) FMassEntityQueryBlueprint& QueryBlueprint);
-
-	UFUNCTION(BlueprintCallable)
-	void ForEachEntityChunk(const FMassProcessorExecWrapper& InExecWrapper, FExecuteOnChunk Function);
-	
 	// thread_local static FMassFragmentRequirementDescription PreEditRequirement; 
+};
+
+USTRUCT(BlueprintType)
+struct FMassEntityQueryWrapper
+{
+	GENERATED_BODY()
+	// Mark: MassEntityQuery must be contained in memory of MassProcessor 
+	UPROPERTY()
+	FMassEntityQuery QueryInternal;
+	UPROPERTY(EditAnywhere,BlueprintReadWrite)
+	FMassEntityQueryBlueprintTransaction Transaction;
 };

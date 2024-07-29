@@ -3,10 +3,11 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "BlueprintClass/MassProcessorExecWrapper.h"
+#include "BlueprintClass/MassExecutionContextWrapper.h"
 #include "MassBlueprintLibrary.generated.h"
 
 
+class UMassProcessor;
 class UMassEntityConfigAsset;
 
 USTRUCT(BlueprintType)
@@ -71,19 +72,25 @@ public:
 	// static void ForEachEntityChunk(UMassEntityQueryBlueprint* InQueryBlueprint, const FMassProcessorExecWrapper& InExecWrapper, FExecuteOnChunk Function);
 
 	UFUNCTION(BlueprintCallable)
-	static int32 GetNumEntities(const FMassProcessorExecWrapper& Wrapper);
+	static int32 GetNumEntities(const FMassExecutionContextWrapper& Wrapper);
 
 	UFUNCTION(BlueprintCallable)
-	static bool GetMutableFragmentView(const FMassProcessorExecWrapper& Wrapper, const UScriptStruct* Struct, FArrayViewBlueprint& OutArrayView);
+	static bool GetMutableFragmentView(const FMassExecutionContextWrapper& Wrapper, const UScriptStruct* Struct, FArrayViewBlueprint& OutArrayView);
 
 	UFUNCTION(BlueprintPure, BlueprintCallable, CustomThunk, meta=(CustomStructureParam = "OutStruct"))
 	static bool GetStructRef(UPARAM(ref) const FArrayViewBlueprint& ArrayView, int32 Index, int32& OutStruct);
 	DECLARE_FUNCTION(execGetStructRef);
 
-	UFUNCTION(BlueprintCallable)
+	UFUNCTION(BlueprintCallable,  meta=(WorldContext="WorldContext"))
 	static bool SpawnEntities(const UMassEntityConfigAsset* ConfigAsset, int32 NumberToSpawn, UObject* WorldContext);
 
 	UFUNCTION(BlueprintCallable, CustomThunk, meta=(ArrayParm = "OutArray"))
 	static bool GetArrayFromView(TArray<int32>& OutArray, UPARAM(ref) const FArrayViewBlueprint& OutArrayView);
-	DECLARE_FUNCTION(execGetArrayFromView);	
+	DECLARE_FUNCTION(execGetArrayFromView);
+	
+	UFUNCTION(BlueprintCallable)
+	static void RegisterQueryWithProcessor(UMassProcessor* InProcessor, UPARAM(ref) FMassEntityQueryWrapper& QueryBlueprint);
+
+	UFUNCTION(BlueprintCallable)
+	static void ForEachEntityChunk(UPARAM(ref)FMassEntityQueryWrapper& QueryWrapper, const FMassExecutionContextWrapper& InExecWrapper, FExecuteOnChunk Function);
 };

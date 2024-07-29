@@ -4,7 +4,7 @@
 #include "BlueprintClass/MassProcessorBlueprint.h"
 
 #include "MassEntityEditorSubsystem.h"
-#include "BlueprintClass/MassProcessorExecWrapper.h"
+#include "BlueprintClass/MassExecutionContextWrapper.h"
 
 UMassProcessorBlueprint::UMassProcessorBlueprint()
 {
@@ -34,7 +34,7 @@ void UMassProcessorBlueprint::ConfigureQueriesBP_Implementation()
 
 void UMassProcessorBlueprint::Execute(FMassEntityManager& EntityManager, FMassExecutionContext& Context)
 {
-	ExecuteBP(FMassProcessorExecWrapper{EntityManager,Context});
+	ExecuteBP(FMassExecutionContextWrapper{EntityManager,Context});
 }
 
 void UMassProcessorBlueprint::PostLoad()
