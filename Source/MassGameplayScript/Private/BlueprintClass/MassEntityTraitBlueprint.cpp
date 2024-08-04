@@ -20,7 +20,7 @@ void UMassEntityTraitBlueprint::BuildTemplate(FMassEntityTemplateBuildContext& B
 			BuildContext.AddTag(*Property->Struct);
 			return;
 		}
-	}	
+	}
 }
 
 void UMassEntityTraitBlueprint::DestroyTemplate() const

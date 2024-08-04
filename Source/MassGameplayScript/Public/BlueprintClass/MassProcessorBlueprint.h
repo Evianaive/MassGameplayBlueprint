@@ -22,14 +22,10 @@ public:
 	virtual void ConfigureQueries() override;
 	UFUNCTION(BlueprintNativeEvent)
 	void ConfigureQueriesBP();
-	// UFUNCTION(BlueprintCallable)
-	// void AddQuery();
 	
 	virtual void Execute(FMassEntityManager& EntityManager, FMassExecutionContext& Context) override;
 	UFUNCTION(BlueprintImplementableEvent)
 	void ExecuteBP(const FMassExecutionContextWrapper& ExecWrapper);
-
-	// UPROPERTY(EditAnywhere,Instanced,EditInline)
 	
 	virtual void PostLoad() override;
 };

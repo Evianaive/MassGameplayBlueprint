@@ -30,6 +30,7 @@ void UMassProcessorBlueprint::ConfigureQueries()
 
 void UMassProcessorBlueprint::ConfigureQueriesBP_Implementation()
 {
+	// Todo Auto Init by Property
 }
 
 void UMassProcessorBlueprint::Execute(FMassEntityManager& EntityManager, FMassExecutionContext& Context)
