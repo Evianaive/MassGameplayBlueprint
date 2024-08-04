@@ -81,15 +81,12 @@ public:
 	static bool GetStructRef(UPARAM(ref) const FArrayViewBlueprint& ArrayView, int32 Index, int32& OutStruct);
 	DECLARE_FUNCTION(execGetStructRef);
 
-	UFUNCTION(BlueprintCallable,  meta=(WorldContext="WorldContext"))
+	UFUNCTION(BlueprintCallable, meta=(WorldContext="WorldContext"))
 	static bool SpawnEntities(const UMassEntityConfigAsset* ConfigAsset, int32 NumberToSpawn, UObject* WorldContext);
 
 	UFUNCTION(BlueprintCallable, CustomThunk, meta=(ArrayParm = "OutArray"))
 	static bool GetArrayFromView(TArray<int32>& OutArray, UPARAM(ref) const FArrayViewBlueprint& OutArrayView);
 	DECLARE_FUNCTION(execGetArrayFromView);
-	
-	UFUNCTION(BlueprintCallable)
-	static void RegisterQueryWithProcessor(UMassProcessor* InProcessor, UPARAM(ref) FMassScriptEntityQuery& QueryBlueprint);
 
 	UFUNCTION(BlueprintCallable)
 	static void ForEachEntityChunk(UPARAM(ref)FMassScriptEntityQuery& QueryWrapper, const FMassExecutionContextWrapper& InExecWrapper, FExecuteOnChunk Function);

@@ -188,54 +188,6 @@ DEFINE_FUNCTION(UMassBlueprintLibrary::execGetArrayFromView)
 	P_NATIVE_END;
 }
 
-void UMassBlueprintLibrary::RegisterQueryWithProcessor(UMassProcessor* InProcessor,
-	FMassScriptEntityQuery& QueryBlueprint)
-{
-	if(InProcessor==nullptr)
-	{
-		// Todo Waring by dialog
-		return;
-	}
-	for (const auto& TagRequirement : QueryBlueprint.Transaction.TagRequirements)
-	{
-		QueryBlueprint.AddTagRequirement(
-			*TagRequirement.StructType,
-			TagRequirement.Presence);
-	}
-	QueryBlueprint.Clear();
-	for (const auto& FragmentRequirement : QueryBlueprint.Transaction.FragmentRequirements)
-	{
-		QueryBlueprint.AddRequirement(
-			FragmentRequirement.StructType,
-			FragmentRequirement.AccessMode,
-			FragmentRequirement.Presence);
-	}
-	for (const auto& ChunkFragmentRequirement : QueryBlueprint.Transaction.ChunkFragmentRequirements)
-	{
-		QueryBlueprint.AddChunkRequirement(
-			ChunkFragmentRequirement);
-	}
-	for (const auto& SharedFragmentDescription : QueryBlueprint.Transaction.SharedFragmentRequirements)
-	{
-		QueryBlueprint.AddSharedRequirement(
-			SharedFragmentDescription);
-	}
-	for (const auto& ConstSharedFragmentDescription : QueryBlueprint.Transaction.ConstSharedFragmentRequirements)
-	{
-		QueryBlueprint.AddConstSharedRequirement(
-			ConstSharedFragmentDescription);
-	}
-	for (const auto& SubsystemDescription : QueryBlueprint.Transaction.SubsystemRequirements)
-	{
-		QueryBlueprint.AddSubsystemRequirement(
-			SubsystemDescription.SubSystem,
-			SubsystemDescription.AccessMode);
-	}
-	if(!InProcessor)
-		return;
-	QueryBlueprint.RegisterWithProcessor(*InProcessor);
-}
-
 void UMassBlueprintLibrary::ForEachEntityChunk(FMassScriptEntityQuery& QueryWrapper,
 	const FMassExecutionContextWrapper& InExecWrapper, FExecuteOnChunk Function)
 {

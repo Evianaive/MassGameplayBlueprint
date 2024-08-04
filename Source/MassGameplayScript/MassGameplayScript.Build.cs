@@ -28,7 +28,8 @@ public class MassGameplayScript : ModuleRules
 				"Core", 
 				"MassEntity",
 				"MassSpawner",
-				"MassSimulation"
+				"MassSimulation",
+				"StructUtils"
 				// ... add other public dependencies that you statically link with here ...
 			}
 			);

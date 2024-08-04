@@ -28,4 +28,7 @@ public:
 	void ExecuteBP(const FMassExecutionContextWrapper& ExecWrapper);
 	
 	virtual void PostLoad() override;
+	
+	UFUNCTION(BlueprintCallable)
+	void RegisterQueryWithProcessor(UPARAM(ref) FMassScriptEntityQuery& QueryBlueprint);
 };

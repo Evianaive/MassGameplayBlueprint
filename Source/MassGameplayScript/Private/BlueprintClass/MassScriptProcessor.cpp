@@ -37,7 +37,7 @@ void UMassScriptProcessor::ConfigureQueriesBP_Implementation()
 		if(Property->Struct->IsChildOf(FMassScriptEntityQuery::StaticStruct()))
 		{
 			auto& Query = *Property->ContainerPtrToValuePtr<FMassScriptEntityQuery>(this);			
-			UMassBlueprintLibrary::RegisterQueryWithProcessor(this,Query);
+			RegisterQueryWithProcessor(Query);
 		}
 	}
 }
@@ -71,4 +71,46 @@ void UMassScriptProcessor::PostLoad()
 		// // better safe than sorry - if queries indicate the game thread execution is required then we marked the whole processor as such
 		// bRequiresGameThreadExecution = bRequiresGameThreadExecution || bNeedsGameThread;
 	}
+}
+
+
+void UMassScriptProcessor::RegisterQueryWithProcessor(
+	FMassScriptEntityQuery& QueryBlueprint)
+{
+	for (const auto& TagRequirement : QueryBlueprint.Transaction.TagRequirements)
+	{
+		QueryBlueprint.AddTagRequirement(
+			*TagRequirement.StructType,
+			TagRequirement.Presence);
+	}
+	QueryBlueprint.Clear();
+	for (const auto& FragmentRequirement : QueryBlueprint.Transaction.FragmentRequirements)
+	{
+		QueryBlueprint.AddRequirement(
+			FragmentRequirement.StructType,
+			FragmentRequirement.AccessMode,
+			FragmentRequirement.Presence);
+	}
+	for (const auto& ChunkFragmentRequirement : QueryBlueprint.Transaction.ChunkFragmentRequirements)
+	{
+		QueryBlueprint.AddChunkRequirement(
+			ChunkFragmentRequirement);
+	}
+	for (const auto& SharedFragmentDescription : QueryBlueprint.Transaction.SharedFragmentRequirements)
+	{
+		QueryBlueprint.AddSharedRequirement(
+			SharedFragmentDescription);
+	}
+	for (const auto& ConstSharedFragmentDescription : QueryBlueprint.Transaction.ConstSharedFragmentRequirements)
+	{
+		QueryBlueprint.AddConstSharedRequirement(
+			ConstSharedFragmentDescription);
+	}
+	for (const auto& SubsystemDescription : QueryBlueprint.Transaction.SubsystemRequirements)
+	{
+		QueryBlueprint.AddSubsystemRequirement(
+			SubsystemDescription.SubSystem,
+			SubsystemDescription.AccessMode);
+	}
+	QueryBlueprint.RegisterWithProcessor(*this);
 }
