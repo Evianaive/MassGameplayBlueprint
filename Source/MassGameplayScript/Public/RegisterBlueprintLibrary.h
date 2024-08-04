@@ -9,13 +9,13 @@
 /**
  * 
  */
-UCLASS()
-class MASSGAMEPLAYSCRIPT_API URegisterBlueprintLibrary : public UBlueprintFunctionLibrary
+UCLASS(Deprecated)
+class MASSGAMEPLAYSCRIPT_API UDEPRECATED_RegisterBlueprintLibrary : public UBlueprintFunctionLibrary
 {
 	GENERATED_BODY()
 
 	UFUNCTION(BlueprintCallable)
-	static void RegisterDynamicProcessor(const TSubclassOf<UMassProcessorBlueprint> BP_Processor);
+	static void RegisterDynamicProcessor(const TSubclassOf<UMassScriptProcessor> BP_Processor);
 
 	UFUNCTION(BlueprintCallable)
 	static void GetDerivedClass(const UClass* Class, TArray<UClass*>& SubClasses);

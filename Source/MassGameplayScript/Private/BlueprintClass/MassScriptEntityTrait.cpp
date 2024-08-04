@@ -1,12 +1,12 @@
 ﻿// Fill out your copyright notice in the Description page of Project Settings.
 
 
-#include "BlueprintClass/MassEntityTraitBlueprint.h"
+#include "BlueprintClass/MassScriptEntityTrait.h"
 
 #include "MassEntityTemplateRegistry.h"
 #include "MassEntityTypes.h"
 
-void UMassEntityTraitBlueprint::BuildTemplate(FMassEntityTemplateBuildContext& BuildContext, const UWorld& World) const
+void UMassScriptEntityTrait::BuildTemplate(FMassEntityTemplateBuildContext& BuildContext, const UWorld& World) const
 {
 	for (const auto Property :TFieldRange<FStructProperty>(this->GetClass()))
 	{
@@ -23,12 +23,12 @@ void UMassEntityTraitBlueprint::BuildTemplate(FMassEntityTemplateBuildContext& B
 	}
 }
 
-void UMassEntityTraitBlueprint::DestroyTemplate() const
+void UMassScriptEntityTrait::DestroyTemplate() const
 {
 	Super::DestroyTemplate();
 }
 
-void UMassEntityTraitBlueprint::ValidateTemplate(FMassEntityTemplateBuildContext& BuildContext,
+void UMassScriptEntityTrait::ValidateTemplate(FMassEntityTemplateBuildContext& BuildContext,
 												const UWorld& World) const
 {
 	Super::ValidateTemplate(BuildContext, World);

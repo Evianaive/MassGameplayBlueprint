@@ -1,20 +1,20 @@
 ﻿// Fill out your copyright notice in the Description page of Project Settings.
 
 
-#include "BlueprintClass/MassProcessorBlueprint.h"
+#include "BlueprintClass/MassScriptProcessor.h"
 
 #include "MassEntityEditorSubsystem.h"
 #include "BlueprintClass/MassExecutionContextWrapper.h"
 #include "BlueprintClass/MassScriptEntityQuery.h"
 #include "Helpers/MassBlueprintLibrary.h"
 
-UMassProcessorBlueprint::UMassProcessorBlueprint()
+UMassScriptProcessor::UMassScriptProcessor()
 {
 	bAutoRegisterWithProcessingPhases = false;
 	bCanShowUpInSettings = false;
 }
 
-void UMassProcessorBlueprint::PostCDOContruct()
+void UMassScriptProcessor::PostCDOContruct()
 {
 	Super::PostCDOContruct();
 	ConfigureQueries();
@@ -22,7 +22,7 @@ void UMassProcessorBlueprint::PostCDOContruct()
 	// GetMutableDefault<UMass>()
 }
 
-void UMassProcessorBlueprint::ConfigureQueries()
+void UMassScriptProcessor::ConfigureQueries()
 {
 	// const TGuardValue ScriptExecutionGuard(GAllowActorScriptExecutionInEditor, true);
 	FEditorScriptExecutionGuard AllowConstructionScript;
@@ -30,7 +30,7 @@ void UMassProcessorBlueprint::ConfigureQueries()
 	ConfigureQueriesBP();
 }
 
-void UMassProcessorBlueprint::ConfigureQueriesBP_Implementation()
+void UMassScriptProcessor::ConfigureQueriesBP_Implementation()
 {
 	for (const auto Property :TFieldRange<FStructProperty>(this->GetClass(), EFieldIteratorFlags::IncludeSuper))
 	{
@@ -42,12 +42,12 @@ void UMassProcessorBlueprint::ConfigureQueriesBP_Implementation()
 	}
 }
 
-void UMassProcessorBlueprint::Execute(FMassEntityManager& EntityManager, FMassExecutionContext& Context)
+void UMassScriptProcessor::Execute(FMassEntityManager& EntityManager, FMassExecutionContext& Context)
 {
 	ExecuteBP(FMassExecutionContextWrapper{EntityManager,Context});
 }
 
-void UMassProcessorBlueprint::PostLoad()
+void UMassScriptProcessor::PostLoad()
 {
 	Super::PostLoad();
 	if (GetClass()->HasAnyClassFlags(CLASS_Abstract) == false)

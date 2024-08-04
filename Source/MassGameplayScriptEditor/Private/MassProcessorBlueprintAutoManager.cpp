@@ -2,7 +2,7 @@
 
 #include "EditorClassUtils.h"
 #include "MassGameplayScriptSettings.h"
-#include "BlueprintClass/MassProcessorBlueprint.h"
+#include "BlueprintClass/MassScriptProcessor.h"
 #include "AssetRegistry/AssetRegistryModule.h"
 #include "Editor/ClassViewer/Private/ClassViewerNode.h"
 #include "UObject/CoreRedirects.h"
@@ -62,7 +62,7 @@ void FMassProcessorBlueprintAutoManager::AddAsset(const FAssetData& InAddedAsset
 		FixupClassCoreRedirects(ClassPath);
 		if(UClass* Class = FindObject<UClass>(nullptr, *ClassPath.ToString()))
 		{
-			if(Class->IsChildOf(UMassProcessorBlueprint::StaticClass()))
+			if(Class->IsChildOf(UMassScriptProcessor::StaticClass()))
 				GetMutableDefault<UMassGameplayScriptSettings>()->AddBlueprintProcessorClass(Class);			
 		}		
 		// TSharedPtr<FClassViewerNode>& Node = ClassPathToNode.FindOrAdd(ClassPath);
@@ -102,7 +102,7 @@ void FMassProcessorBlueprintAutoManager::UpdateBlueprintProcessor()
 	TArray<FAssetData> Assets;
 
 	AssetRegistry.GetAssetsByClass(UBlueprint::StaticClass()->GetClassPathName(), Assets, /*bSearchSubClasses=*/true);
-	const auto& MassProcessorBlueprintClassPath = UMassProcessorBlueprint::StaticClass()->GetClassPathName();
+	const auto& MassProcessorBlueprintClassPath = UMassScriptProcessor::StaticClass()->GetClassPathName();
 	
 	for (const FAssetData& AssetData : Assets)
 	{

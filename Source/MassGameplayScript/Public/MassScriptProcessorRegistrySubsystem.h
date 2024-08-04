@@ -5,13 +5,13 @@
 #include "CoreMinimal.h"
 #include "MassSubsystemBase.h"
 #include "UObject/Object.h"
-#include "MassProcessorBlueprintRegistrySubsystem.generated.h"
+#include "MassScriptProcessorRegistrySubsystem.generated.h"
 
 /**
  * 
  */
 UCLASS()
-class MASSGAMEPLAYSCRIPT_API UMassProcessorBlueprintRegistrySubsystem : public UMassSubsystemBase
+class MASSGAMEPLAYSCRIPT_API UMassScriptProcessorRegistrySubsystem : public UMassSubsystemBase
 {
 	GENERATED_BODY()
 	virtual void Initialize(FSubsystemCollectionBase& Collection) override;

@@ -1,22 +1,22 @@
 ﻿// Fill out your copyright notice in the Description page of Project Settings.
 
 
-#include "MassProcessorBlueprintRegistrySubsystem.h"
+#include "MassScriptProcessorRegistrySubsystem.h"
 
 #include "MassGameplayScriptSettings.h"
-#include "BlueprintClass/MassProcessorBlueprint.h"
+#include "BlueprintClass/MassScriptProcessor.h"
 #include "MassSimulationSubsystem.h"
 
-void UMassProcessorBlueprintRegistrySubsystem::Initialize(FSubsystemCollectionBase& Collection)
+void UMassScriptProcessorRegistrySubsystem::Initialize(FSubsystemCollectionBase& Collection)
 {
 	UMassSimulationSubsystem* SimulationSubsystem = Collection.InitializeDependency<UMassSimulationSubsystem>();
 	const auto& ProcessorClasses = GetDefault<UMassGameplayScriptSettings>()->BlueprintProcessorClasses;
 	for(const auto& ProcessorClass:ProcessorClasses)
 	{
-		if(const auto Class = ProcessorClass.TryLoadClass<UMassProcessorBlueprint>())
+		if(const auto Class = ProcessorClass.TryLoadClass<UMassScriptProcessor>())
 		{
-			Class->GetDefaultObject<UMassProcessorBlueprint>()->ConfigureQueries();
-			SimulationSubsystem->RegisterDynamicProcessor(*Class->GetDefaultObject<UMassProcessorBlueprint>());
+			Class->GetDefaultObject<UMassScriptProcessor>()->ConfigureQueries();
+			SimulationSubsystem->RegisterDynamicProcessor(*Class->GetDefaultObject<UMassScriptProcessor>());
 		}
 	}
 	Super::Initialize(Collection);

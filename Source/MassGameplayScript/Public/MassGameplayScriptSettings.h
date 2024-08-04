@@ -9,7 +9,7 @@
 
 #define GET_MASS_BP_CONFIG_VALUE(a) (GetMutableDefault<UMassGameplayScriptSettings>()->a)
 
-class UMassProcessorBlueprint;
+class UMassScriptProcessor;
 struct FPropertyChangedEvent;
 /**
  * Implements the settings for MassBlueprint plugin
@@ -26,7 +26,7 @@ public:
 
 	UMassGameplayScriptSettings(const FObjectInitializer& ObjectInitializer = FObjectInitializer::Get());
 	static FOnInitialized& GetOnInitializedEvent() { return GET_MASS_BP_CONFIG_VALUE(OnInitializedEvent); }
-	void AddBlueprintProcessorClass(TSubclassOf<UMassProcessorBlueprint> Class);
+	void AddBlueprintProcessorClass(TSubclassOf<UMassScriptProcessor> Class);
 	void RemoveBlueprintProcessorAsset(const FSoftClassPath& ClassPath);
 	// void RemoveBlueprintProcessorClass();
 #if WITH_EDITOR

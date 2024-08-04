@@ -4,7 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "MassProcessor.h"
-#include "MassProcessorBlueprint.generated.h"
+#include "MassScriptProcessor.generated.h"
 
 /**
  * 
@@ -12,11 +12,11 @@
 
 struct FMassExecutionContextWrapper;
 UCLASS(Blueprintable,Abstract)
-class MASSGAMEPLAYSCRIPT_API UMassProcessorBlueprint : public UMassProcessor
+class MASSGAMEPLAYSCRIPT_API UMassScriptProcessor : public UMassProcessor
 {
 	GENERATED_BODY()
 public:
-	UMassProcessorBlueprint();
+	UMassScriptProcessor();
 	virtual void PostCDOContruct() override;
 	
 	virtual void ConfigureQueries() override;

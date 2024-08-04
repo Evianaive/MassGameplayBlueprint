@@ -5,13 +5,13 @@
 #include "CoreMinimal.h"
 #include "MassEntityTraitBase.h"
 #include "UObject/Object.h"
-#include "MassEntityTraitBlueprint.generated.h"
+#include "MassScriptEntityTrait.generated.h"
 
 /**
  * 
  */
 UCLASS(Blueprintable, BlueprintType, Abstract)
-class MASSGAMEPLAYSCRIPT_API UMassEntityTraitBlueprint : public UMassEntityTraitBase
+class MASSGAMEPLAYSCRIPT_API UMassScriptEntityTrait : public UMassEntityTraitBase
 {
 	GENERATED_BODY()
 public:

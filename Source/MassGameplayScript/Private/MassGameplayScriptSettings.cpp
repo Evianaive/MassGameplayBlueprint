@@ -5,14 +5,14 @@
 
 #include "Helpers/MassBlueprintClassHelper.h"
 #include "MassEntitySettings.h"
-#include "BlueprintClass/MassProcessorBlueprint.h"
+#include "BlueprintClass/MassScriptProcessor.h"
 
 UMassGameplayScriptSettings::UMassGameplayScriptSettings(const FObjectInitializer& ObjectInitializer)
 {
 	FCoreDelegates::OnPostEngineInit.AddUObject(this, &UMassGameplayScriptSettings::OnPostEngineInit);
 }
 
-void UMassGameplayScriptSettings::AddBlueprintProcessorClass(TSubclassOf<UMassProcessorBlueprint> Class)
+void UMassGameplayScriptSettings::AddBlueprintProcessorClass(TSubclassOf<UMassScriptProcessor> Class)
 {
 	if(FMassBlueprintClassHelper::IsSkeletonClass(Class))
 		return;

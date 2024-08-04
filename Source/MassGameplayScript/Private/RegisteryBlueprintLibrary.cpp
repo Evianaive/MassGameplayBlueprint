@@ -3,16 +3,16 @@
 
 #include "Helpers/MassBlueprintClassHelper.h"
 #include "MassEntitySettings.h"
-#include "BlueprintClass/MassProcessorBlueprint.h"
+#include "BlueprintClass/MassScriptProcessor.h"
 #include "RegisterBlueprintLibrary.h"
 
 
-void URegisterBlueprintLibrary::RegisterDynamicProcessor(const TSubclassOf<UMassProcessorBlueprint> BP_Processor)
+void UDEPRECATED_RegisterBlueprintLibrary::RegisterDynamicProcessor(const TSubclassOf<UMassScriptProcessor> BP_Processor)
 {
 	GetMutableDefault<UMassEntitySettings>()->AddToActiveProcessorsList(BP_Processor);
 }
 
-void URegisterBlueprintLibrary::GetDerivedClass(const UClass* Class, TArray<UClass*>& SubClasses)
+void UDEPRECATED_RegisterBlueprintLibrary::GetDerivedClass(const UClass* Class, TArray<UClass*>& SubClasses)
 {
 	GetDerivedClasses(Class, SubClasses);	
 	
@@ -27,7 +27,7 @@ void URegisterBlueprintLibrary::GetDerivedClass(const UClass* Class, TArray<UCla
 	}
 }
 
-void URegisterBlueprintLibrary::GetDefaultObjectBP(const UClass* Class, UObject*& OutObject)
+void UDEPRECATED_RegisterBlueprintLibrary::GetDefaultObjectBP(const UClass* Class, UObject*& OutObject)
 {
 	OutObject = Class->GetDefaultObject();
 }
