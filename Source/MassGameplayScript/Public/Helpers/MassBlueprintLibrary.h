@@ -89,8 +89,8 @@ public:
 	DECLARE_FUNCTION(execGetArrayFromView);
 	
 	UFUNCTION(BlueprintCallable)
-	static void RegisterQueryWithProcessor(UMassProcessor* InProcessor, UPARAM(ref) FMassEntityQueryWrapper& QueryBlueprint);
+	static void RegisterQueryWithProcessor(UMassProcessor* InProcessor, UPARAM(ref) FMassScriptEntityQuery& QueryBlueprint);
 
 	UFUNCTION(BlueprintCallable)
-	static void ForEachEntityChunk(UPARAM(ref)FMassEntityQueryWrapper& QueryWrapper, const FMassExecutionContextWrapper& InExecWrapper, FExecuteOnChunk Function);
+	static void ForEachEntityChunk(UPARAM(ref)FMassScriptEntityQuery& QueryWrapper, const FMassExecutionContextWrapper& InExecWrapper, FExecuteOnChunk Function);
 };
