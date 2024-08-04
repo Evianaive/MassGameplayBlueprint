@@ -5,6 +5,8 @@
 
 #include "MassEntityEditorSubsystem.h"
 #include "BlueprintClass/MassExecutionContextWrapper.h"
+#include "BlueprintClass/MassScriptEntityQuery.h"
+#include "Helpers/MassBlueprintLibrary.h"
 
 UMassProcessorBlueprint::UMassProcessorBlueprint()
 {
@@ -30,7 +32,14 @@ void UMassProcessorBlueprint::ConfigureQueries()
 
 void UMassProcessorBlueprint::ConfigureQueriesBP_Implementation()
 {
-	// Todo Auto Init by Property
+	for (const auto Property :TFieldRange<FStructProperty>(this->GetClass(), EFieldIteratorFlags::IncludeSuper))
+	{
+		if(Property->Struct->IsChildOf(FMassScriptEntityQuery::StaticStruct()))
+		{
+			auto& Query = *Property->ContainerPtrToValuePtr<FMassScriptEntityQuery>(this);			
+			UMassBlueprintLibrary::RegisterQueryWithProcessor(this,Query);
+		}
+	}
 }
 
 void UMassProcessorBlueprint::Execute(FMassEntityManager& EntityManager, FMassExecutionContext& Context)
