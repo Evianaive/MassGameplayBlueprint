@@ -111,18 +111,14 @@ void FMassStructSelectDetails::CustomizeHeader(
 				if (PropertyHandle->IsValidHandle())
 				{
 					FScopedTransaction Transaction(NSLOCTEXT( "MassStructSelect","OnStructPicked", "Set Struct"));
-
 					PropertyHandle->NotifyPreChange();
-
 					PropertyHandle->EnumerateRawData([InStruct](void* RawData, const int32 /*DataIndex*/, const int32 /*NumDatas*/)
 					{
 						*static_cast<const UScriptStruct**>(RawData) = InStruct;
 						return true;
 					});
-
 					PropertyHandle->NotifyPostChange(EPropertyChangeType::ValueSet);
 					PropertyHandle->NotifyFinishedChangingProperties();
-
 					// Property tree will be invalid after changing the struct type, force update.
 					if (PropUtils.IsValid())
 					{

@@ -72,9 +72,7 @@ void FStructEditorExtenderCreator_MassSelect::OnUserDefinedStructEditorOpen(UObj
 					EditStruct->SetSuperStruct(const_cast<UScriptStruct*>(Struct));
 					if(auto MetaData = EditStruct->GetOutermost()->GetMetaData())
 					{
-						// Todo make this string static 
-						MetaData->SetValue(EditStruct,TEXT("SuperStruct"),*Struct->GetPathName());
-						// Metadata->ObjectMetaDataMap
+						MetaData->SetValue(EditStruct,SuperStructMetaData,*Struct->GetPathName());
 					}
 					EditStruct->Modify();
 					ComboButton->SetIsOpen(false);
