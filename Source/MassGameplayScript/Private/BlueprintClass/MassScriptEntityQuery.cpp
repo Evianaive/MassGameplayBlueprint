@@ -2,9 +2,6 @@
 
 
 #include "BlueprintClass/MassScriptEntityQuery.h"
-#include "Utility/PrivateAccessor.hpp"
-
-DECLARE_PRIVATE_ACCESS(FMassEntityQuery,ArchetypeFragmentMapping,TArray<FMassQueryRequirementIndicesMapping>)
 
 FMassFragmentRequirements& FMassScriptEntityQuery::AddChunkRequirement(
 	const FMassChunkFragmentRequirementDescription& ChunkDescription)
@@ -85,8 +82,7 @@ FMassFragmentRequirements& FMassScriptEntityQuery::AddSharedRequirement(
 		if (SharedDescription.AccessMode == EMassFragmentAccess::ReadWrite)
 		{
 			// bRequiresGameThreadExecution |= TMassSharedFragmentTraits<T>::GameThreadOnly;
-			uint8& BitField = *reinterpret_cast<uint8*>(&(this->*PRIVATE_ACCESS(FMassEntityQuery,ArchetypeFragmentMapping))[1]);
-			BitField |= 0x01;
+			SetParallelCommandBufferEnabled(true);
 		}
 		break;
 	case EMassFragmentPresence::Optional:
@@ -95,8 +91,7 @@ FMassFragmentRequirements& FMassScriptEntityQuery::AddSharedRequirement(
 		if (SharedDescription.AccessMode == EMassFragmentAccess::ReadWrite)
 		{
 			// bRequiresGameThreadExecution |= TMassSharedFragmentTraits<T>::GameThreadOnly;
-			uint8& BitField = *reinterpret_cast<uint8*>(&(this->*PRIVATE_ACCESS(FMassEntityQuery,ArchetypeFragmentMapping))[1]);
-			BitField |= 0x01;
+			SetParallelCommandBufferEnabled(true);
 		}
 		break;
 	case EMassFragmentPresence::None:
