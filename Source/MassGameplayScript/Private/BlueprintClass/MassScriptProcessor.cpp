@@ -77,13 +77,13 @@ void UMassScriptProcessor::PostLoad()
 void UMassScriptProcessor::RegisterQueryWithProcessor(
 	FMassScriptEntityQuery& QueryBlueprint)
 {
+	QueryBlueprint.Clear();
 	for (const auto& TagRequirement : QueryBlueprint.Transaction.TagRequirements)
 	{
 		QueryBlueprint.AddTagRequirement(
 			*TagRequirement.StructType,
 			TagRequirement.Presence);
 	}
-	QueryBlueprint.Clear();
 	for (const auto& FragmentRequirement : QueryBlueprint.Transaction.FragmentRequirements)
 	{
 		QueryBlueprint.AddRequirement(
