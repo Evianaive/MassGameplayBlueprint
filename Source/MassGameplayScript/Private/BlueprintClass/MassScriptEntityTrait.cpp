@@ -47,6 +47,20 @@ void UMassScriptEntityTrait::BuildTemplateBP_Implementation()
 	for (const auto Property :TFieldRange<FStructProperty>(this->GetClass()))
 	{
 		const FString& PropertyCategory = Property->GetMetaData(TEXT("Category"));
+		if(PropertyCategory == TEXT("Dependencies"))
+		{
+			if(!Property->Struct)
+				continue;
+			if(Property->Struct->IsChildOf(FMassFragment::StaticStruct())
+				||Property->Struct->IsChildOf(FMassChunkFragment::StaticStruct())
+				||Property->Struct->IsChildOf(FMassSharedFragment::StaticStruct())
+				||Property->Struct->IsChildOf(FMassTag::StaticStruct())
+				)
+			{
+				TempBuildContext->AddDependency(Property->Struct);
+				continue;
+			}
+		}
 		bool bSharedFragmentIsConst = false;
 		if(Property->Struct->IsChildOf(FMassSharedFragment::StaticStruct()))
 		{
