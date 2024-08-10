@@ -51,7 +51,8 @@ void FMassGameplayScriptEditorModule::StartupModule()
 	}
 	{
 		FPropertyEditorModule& PropertyModule = FModuleManager::GetModuleChecked<FPropertyEditorModule>("PropertyEditor");
-		PropertyModule.RegisterCustomPropertyTypeLayout("MassStructSelect", FOnGetPropertyTypeCustomizationInstance::CreateStatic(&FMassStructSelectDetails::MakeInstance));
+		PropertyModule.RegisterCustomPropertyTypeLayout("MassStructSelect",
+			FOnGetPropertyTypeCustomizationInstance::CreateStatic(&FMassStructSelectDetails::MakeInstance));
 	}
 }
 

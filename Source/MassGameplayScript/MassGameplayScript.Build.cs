@@ -25,7 +25,7 @@ public class MassGameplayScript : ModuleRules
 		PublicDependencyModuleNames.AddRange(
 			new string[]
 			{
-				"Core", 
+				"Core",
 				"MassEntity",
 				"MassSpawner",
 				"MassSimulation",
