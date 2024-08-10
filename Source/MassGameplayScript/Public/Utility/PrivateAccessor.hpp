@@ -18,7 +18,7 @@ struct TStaticPtrInit {
 
 #define DECLARE_PRIVATE_ACCESS(Typename,MemberName,MemberType)\
 struct Typename##MemberName##Access{using Type=MemberType Typename::*;};\
-template struct TStaticPtrInit<Typename##MemberName##Access,&##Typename##::##MemberName>;\
+template struct TStaticPtrInit<Typename##MemberName##Access,&Typename::MemberName>;\
 
 #define PRIVATE_ACCESS(Typename,MemberName)\
 TPrivateAccessor<Typename##MemberName##Access>::MemberPtr
