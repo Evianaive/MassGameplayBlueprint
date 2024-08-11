@@ -8,12 +8,50 @@
 #include "Utility/PrivateAccessor.hpp"
 
 DECLARE_PRIVATE_ACCESS(FMassEntityTemplateData,Composition,FMassArchetypeCompositionDescriptor)
+#define MAP_AB TMap<uint32, int32>
+DECLARE_PRIVATE_ACCESS(FMassEntityManager,SharedFragmentsMap,MAP_AB);
+DECLARE_PRIVATE_ACCESS(FMassEntityManager,ConstSharedFragmentsMap,MAP_AB);
+#undef MAP_AB
+#define MAP_AB TMap<UScriptStruct*, TArray<FSharedStruct>>
+DECLARE_PRIVATE_ACCESS(FMassEntityManager,SharedFragmentsTypeMap,MAP_AB)
+#undef MAP_AB
+DECLARE_PRIVATE_ACCESS(FMassEntityManager,SharedFragments,TArray<FSharedStruct>)
+struct FMassEntityManagerConstSharedFragmentsAccess{using Type=TArray<FConstSharedStruct> FMassEntityManager::*;};
+template struct TStaticPtrInit<FMassEntityManagerConstSharedFragmentsAccess,&FMassEntityManager::ConstSharedFragments>;
+
 struct FLocalDecorator : public FMassEntityTemplateBuildContext
 {
 	void AddChunkFragment(const UScriptStruct& Struct)
 	{
 		TypeAdded(Struct);		
 		(TemplateData.*PRIVATE_ACCESS(FMassEntityTemplateData,Composition)).ChunkFragments.Add(Struct);
+	}
+	void AddConstSharedFragmentChecked(FConstStructView InStructView, FMassEntityManager& EntityManager)
+	{
+		uint32 Hash = UE::StructUtils::GetStructCrc32(InStructView);
+		int32& Index = (EntityManager.*PRIVATE_ACCESS(FMassEntityManager,ConstSharedFragmentsMap)).FindOrAddByHash(Hash, Hash, INDEX_NONE);
+		auto& ConstSharedFragmentsRef = EntityManager.*PRIVATE_ACCESS(FMassEntityManager,ConstSharedFragments);
+		if (Index == INDEX_NONE)
+		{
+			Index = ConstSharedFragmentsRef.Add(FSharedStruct::Make(InStructView));
+		}
+		AddConstSharedFragment(ConstSharedFragmentsRef[Index]);
+	}
+	void AddSharedFragmentChecked(FConstStructView InStructView, FMassEntityManager& EntityManager)
+	{
+		uint32 Hash = UE::StructUtils::GetStructCrc32(InStructView);
+		int32& Index = (EntityManager.*PRIVATE_ACCESS(FMassEntityManager,SharedFragmentsMap)).FindOrAddByHash(Hash, Hash, INDEX_NONE);
+		auto& SharedFragmentsRef = EntityManager.*PRIVATE_ACCESS(FMassEntityManager,SharedFragments);
+		if (Index == INDEX_NONE)
+		{
+			Index = (EntityManager.*PRIVATE_ACCESS(FMassEntityManager,SharedFragments)).Add(FSharedStruct::Make(InStructView));
+			// note that even though we're copying the freshly created FSharedStruct instance it's perfectly fine since 
+			// FSharedStruct do guarantee there's not going to be data duplication (via a member shared pointer to hosted data)
+			TArray<FSharedStruct>& InstancesOfType = (EntityManager.*PRIVATE_ACCESS(FMassEntityManager,SharedFragmentsTypeMap))
+			.FindOrAdd(const_cast<UScriptStruct*>(InStructView.GetScriptStruct()), {});
+			InstancesOfType.Add(SharedFragmentsRef[Index]);
+		}
+		AddSharedFragment(SharedFragmentsRef[Index]);
 	}
 	bool HasTag(const UScriptStruct& Struct) const
 	{
@@ -24,14 +62,6 @@ struct FLocalDecorator : public FMassEntityTemplateBuildContext
 		return TemplateData.GetCompositionDescriptor().ChunkFragments.Contains(Struct);
 	}
 };
-#define MAP_AB TMap<uint32, int32>
-DECLARE_PRIVATE_ACCESS(FMassEntityManager,SharedFragmentsMap,MAP_AB);
-DECLARE_PRIVATE_ACCESS(FMassEntityManager,ConstSharedFragmentsMap,MAP_AB);
-#define MAP_AB TMap<UScriptStruct*, TArray<FSharedStruct>>
-DECLARE_PRIVATE_ACCESS(FMassEntityManager,SharedFragmentsTypeMap,MAP_AB)
-#undef MAP_AB
-DECLARE_PRIVATE_ACCESS(FMassEntityManager,SharedFragments,TArray<FSharedStruct>)
-DECLARE_PRIVATE_ACCESS(FMassEntityManager,ConstSharedFragments,TArray<FConstSharedStruct>)
 
 void UMassScriptEntityTrait::BuildTemplate(FMassEntityTemplateBuildContext& BuildContext, const UWorld& World) const
 {
@@ -140,13 +170,9 @@ DEFINE_FUNCTION(UMassScriptEntityTrait::execAddToTrait)
 	P_FINISH;
 	P_NATIVE_BEGIN;
 	if(bAddDependency && StructProperty->Struct)
-	{
 		P_THIS->TempBuildContext->AddDependency(StructProperty->Struct);
-	}
 	else
-	{
 		P_THIS->Generic_AddToTrait(StructProperty,static_cast<uint8 const*>(StructAddr),bConst);
-	}
 	P_NATIVE_END;
 }
 
@@ -154,53 +180,16 @@ void UMassScriptEntityTrait::Generic_AddToTrait(const FStructProperty* Property,
 {
 	FMassEntityManager& EntityManager = UE::Mass::Utils::GetEntityManagerChecked(*TempWorld);
 	if(Property->Struct->IsChildOf(FMassFragment::StaticStruct()))
-	{
 		TempBuildContext->AddFragment(FConstStructView(Property->Struct,PropertyValue));
-		// UE_LOG(LogTemp,Log,TEXT("AddFragment"))
-		return;
-	}
-	if(Property->Struct->IsChildOf(FMassChunkFragment::StaticStruct()))
-	{
+	else if(Property->Struct->IsChildOf(FMassChunkFragment::StaticStruct()))
 		TempBuildContext->AddChunkFragment(*Property->Struct);
-		// UE_LOG(LogTemp,Log,TEXT("AddChunkFragment"))
-		return;
-	}
-	if(Property->Struct->IsChildOf(FMassSharedFragment::StaticStruct()))
+	else if(Property->Struct->IsChildOf(FMassSharedFragment::StaticStruct()))
 	{
-		uint32 Hash = UE::StructUtils::GetStructCrc32(FConstStructView(Property->Struct,PropertyValue));
 		if(IsConst)
-		{
-			int32& Index = (EntityManager.*PRIVATE_ACCESS(FMassEntityManager,ConstSharedFragmentsMap)).FindOrAddByHash(Hash, Hash, INDEX_NONE);
-			auto& ConstSharedFragmentsRef = EntityManager.*PRIVATE_ACCESS(FMassEntityManager,ConstSharedFragments);
-			if (Index == INDEX_NONE)
-			{
-				Index = ConstSharedFragmentsRef.Add(FSharedStruct::Make(Property->Struct,PropertyValue));
-			}
-			TempBuildContext->AddConstSharedFragment(ConstSharedFragmentsRef[Index]);
-			// UE_LOG(LogTemp,Log,TEXT("AddConstSharedFragment"))
-			return;
-		}
+			TempBuildContext->AddConstSharedFragmentChecked(FConstStructView(Property->Struct,PropertyValue),EntityManager);
 		else
-		{
-			int32& Index = (EntityManager.*PRIVATE_ACCESS(FMassEntityManager,SharedFragmentsMap)).FindOrAddByHash(Hash, Hash, INDEX_NONE);
-			auto& SharedFragmentsRef = EntityManager.*PRIVATE_ACCESS(FMassEntityManager,SharedFragments);
-			if (Index == INDEX_NONE)
-			{
-				Index = (EntityManager.*PRIVATE_ACCESS(FMassEntityManager,SharedFragments)).Add(FSharedStruct::Make(Property->Struct,PropertyValue));
-				// note that even though we're copying the freshly created FSharedStruct instance it's perfectly fine since 
-				// FSharedStruct do guarantee there's not going to be data duplication (via a member shared pointer to hosted data)
-				TArray<FSharedStruct>& InstancesOfType = (EntityManager.*PRIVATE_ACCESS(FMassEntityManager,SharedFragmentsTypeMap)).FindOrAdd(Property->Struct, {});
-				InstancesOfType.Add(SharedFragmentsRef[Index]);
-			}
-			TempBuildContext->AddSharedFragment(SharedFragmentsRef[Index]);
-			// UE_LOG(LogTemp,Log,TEXT("AddSharedFragment"))
-			return;
-		}
+			TempBuildContext->AddSharedFragmentChecked(FConstStructView(Property->Struct,PropertyValue),EntityManager);
 	}
-	if(Property->Struct->IsChildOf(FMassTag::StaticStruct()))
-	{
+	else if(Property->Struct->IsChildOf(FMassTag::StaticStruct()))
 		TempBuildContext->AddTag(*Property->Struct);
-		// UE_LOG(LogTemp,Log,TEXT("AddTag"))
-		return;
-	}
 }
