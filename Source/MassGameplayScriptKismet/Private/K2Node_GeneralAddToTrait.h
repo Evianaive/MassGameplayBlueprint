@@ -40,4 +40,6 @@ public:
 	
 	UEdGraphPin* GetStructPin() const;
 	UStruct* GetStruct() const;
+
+	static bool IsPinMassStruct(const UEdGraphPin* InPin);
 };

@@ -57,18 +57,19 @@ FText UK2Node_GeneralAddToTrait::GetNodeTitle(ENodeTitleType::Type TitleType) co
 			FString Title;
 			if(Struct->IsChildOf(FMassFragment::StaticStruct()))
 				Title = TEXT("Add Fragment");
-			if(Struct->IsChildOf(FMassTag::StaticStruct()))
+			else if(Struct->IsChildOf(FMassTag::StaticStruct()))
 				Title = TEXT("Add Tag");
-			if(Struct->IsChildOf(FMassChunkFragment::StaticStruct()))
+			else if(Struct->IsChildOf(FMassChunkFragment::StaticStruct()))
 				Title = TEXT("Add ChunkFragment");
-			if(Struct->IsChildOf(FMassSharedFragment::StaticStruct()))
+			else if(Struct->IsChildOf(FMassSharedFragment::StaticStruct()))
 				Title = TEXT("Add SharedFragment");
+			else
+				Title = TEXT("Not Valid Struct!");			
 			if(bAddDependency)
-				Title.Append(TEXT(" Dependency"));
-			
+				Title.Append(TEXT(" Dependency"));				
 			return FText::FromString(Title);
 		}
-		return LOCTEXT("GeneralAddToTrait_FullTitle", "Not Valid!");
+		return LOCTEXT("GeneralAddToTrait_FullTitle", "Not Struct!");
 	}
 	if(bAddDependency)
 	{
@@ -188,7 +189,13 @@ bool UK2Node_GeneralAddToTrait::IsActionFilteredOut(FBlueprintActionFilter const
 bool UK2Node_GeneralAddToTrait::IsConnectionDisallowed(const UEdGraphPin* MyPin, const UEdGraphPin* OtherPin,
 														FString& OutReason) const
 {
-	return Super::IsConnectionDisallowed(MyPin,OtherPin,OutReason);
+	bool CanConnect = Super::IsConnectionDisallowed(MyPin,OtherPin,OutReason);
+	if(MyPin==GetStructPin() && !IsPinMassStruct(OtherPin))
+	{
+		CanConnect = true;
+		OutReason = TEXT("Only Child Struct of MassFragment/MassTag/MassChunkFragment/MassSharedFragment can be connected");
+	}
+	return CanConnect;
 	// const UEdGraphPin* ValuePin = FindPinChecked(FName(TEXT("Value")));
 	//
 	// if (MyPin == ValuePin && MyPin->PinType.PinCategory == UEdGraphSchema_K2::PC_Wildcard)
@@ -217,6 +224,11 @@ void UK2Node_GeneralAddToTrait::ExpandNode(FKismetCompilerContext& CompilerConte
 	Node->AllocateDefaultPins();
 	for(int i=0;i<Node->Pins.Num();i++)
 	{
+		if(this->Pins[i] == GetStructPin())
+		{
+			if(!IsPinMassStruct(GetStructPin()))
+				continue;
+		}
 		CompilerContext.MovePinLinksToIntermediate(*this->Pins[i], *Node->Pins[i]);
 	}
 	Node->PostReconstructNode();
@@ -235,6 +247,22 @@ UEdGraphPin* UK2Node_GeneralAddToTrait::GetStructPin() const
 UStruct* UK2Node_GeneralAddToTrait::GetStruct() const
 {
 	return Cast<UStruct>(GetStructPin()->PinType.PinSubCategoryObject.Get());
+}
+
+bool UK2Node_GeneralAddToTrait::IsPinMassStruct(const UEdGraphPin* InPin)
+{
+	const auto PinStruct = Cast<UScriptStruct>(InPin->PinType.PinSubCategoryObject);
+	if(!PinStruct)
+		return false;
+	
+	if(PinStruct->IsChildOf(FMassFragment::StaticStruct())||
+		PinStruct->IsChildOf(FMassTag::StaticStruct())||
+		PinStruct->IsChildOf(FMassChunkFragment::StaticStruct())||
+		PinStruct->IsChildOf(FMassSharedFragment::StaticStruct()))
+	{
+		return true;
+	}	
+	return false;
 }
 
 #undef LOCTEXT_NAMESPACE
