@@ -149,7 +149,7 @@ void UK2Node_GetArrayViewItemRef::ExpandNode(FKismetCompilerContext& CompilerCon
 	GetArrayNode->GetResultPin()->PinType.bIsReference = true;
 	
 	auto* BreakArrayViewNode = CompilerContext.SpawnIntermediateNode<UK2Node_BreakStructWithConvertMember>(this,SourceGraph);
-	BreakArrayViewNode->StructType = FArrayViewBlueprint::StaticStruct();
+	BreakArrayViewNode->StructType = FScriptArrayView::StaticStruct();
 	BreakArrayViewNode->bMadeAfterOverridePinRemoval = true;
 	
 	BreakArrayViewNode->AllocateDefaultPins();

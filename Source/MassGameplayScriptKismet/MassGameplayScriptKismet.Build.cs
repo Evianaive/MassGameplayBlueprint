@@ -43,7 +43,8 @@ public class MassGameplayScriptKismet : ModuleRules
 				"BlueprintGraph",
 				"KismetCompiler", 
 				"KismetWidgets",
-				"MassEntity"
+				"MassEntity",
+				"Kismet"
 				// ... add private dependencies that you statically link with here ...	
 			}
 			);

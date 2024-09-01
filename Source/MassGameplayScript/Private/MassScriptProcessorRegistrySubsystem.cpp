@@ -10,7 +10,7 @@
 void UMassScriptProcessorRegistrySubsystem::Initialize(FSubsystemCollectionBase& Collection)
 {
 	UMassSimulationSubsystem* SimulationSubsystem = Collection.InitializeDependency<UMassSimulationSubsystem>();
-	const auto& ProcessorClasses = GetDefault<UMassGameplayScriptSettings>()->BlueprintProcessorClasses;
+	const auto& ProcessorClasses = GetDefault<UMassGameplayScriptSettings>()->ScriptProcessorClasses;
 	for(const auto& ProcessorClass:ProcessorClasses)
 	{
 		if(const auto Class = ProcessorClass.TryLoadClass<UMassScriptProcessor>())

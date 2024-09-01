@@ -5,7 +5,7 @@
 #include "CoreMinimal.h"
 #include "Modules/ModuleManager.h"
 
-class FMassProcessorBlueprintAutoManager;
+class FMassScriptProcessorAutoManager;
 class FMassGameplayScriptEditorModule : public IModuleInterface
 {
 public:
@@ -13,6 +13,6 @@ public:
 	/** IModuleInterface implementation */
 	virtual void StartupModule() override;
 	virtual void ShutdownModule() override;
-	TSharedPtr< FMassProcessorBlueprintAutoManager > MassProcessorBlueprintAutoManager;
+	TSharedPtr< FMassScriptProcessorAutoManager > MassScriptProcessorAutoManager;
 	TSharedPtr<class FUserDefinedStructEditMassListener> MassSuperStructRestore;
 };

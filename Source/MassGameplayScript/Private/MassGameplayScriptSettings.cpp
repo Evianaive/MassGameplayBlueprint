@@ -12,16 +12,16 @@ UMassGameplayScriptSettings::UMassGameplayScriptSettings(const FObjectInitialize
 	FCoreDelegates::OnPostEngineInit.AddUObject(this, &UMassGameplayScriptSettings::OnPostEngineInit);
 }
 
-void UMassGameplayScriptSettings::AddBlueprintProcessorClass(TSubclassOf<UMassScriptProcessor> Class)
+void UMassGameplayScriptSettings::AddScriptProcessorClass(TSubclassOf<UMassScriptProcessor> Class)
 {
 	if(FMassBlueprintClassHelper::IsSkeletonClass(Class))
 		return;
-	BlueprintProcessorClasses.AddUnique(Class->GetClassPathName().ToString());
+	ScriptProcessorClasses.AddUnique(Class->GetClassPathName().ToString());
 }
 
-void UMassGameplayScriptSettings::RemoveBlueprintProcessorAsset(const FSoftClassPath& ClassPath)
+void UMassGameplayScriptSettings::RemoveScriptProcessorAsset(const FSoftClassPath& ClassPath)
 {
-	BlueprintProcessorClasses.Remove(ClassPath);
+	ScriptProcessorClasses.Remove(ClassPath);
 }
 
 void UMassGameplayScriptSettings::PostEditChangeProperty(FPropertyChangedEvent& PropertyChangedEvent)

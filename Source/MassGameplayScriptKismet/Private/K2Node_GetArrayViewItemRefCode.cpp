@@ -79,7 +79,7 @@ public:
 		
 		if(ArrayViewTerm)
 		{
-			// auto Property = FArrayViewBlueprint::StaticStruct()->FindPropertyByName(GET_MEMBER_NAME_CHECKED(FArrayViewBlueprint,AsArray));
+			// auto Property = FScriptArrayView::StaticStruct()->FindPropertyByName(GET_MEMBER_NAME_CHECKED(FArrayViewBlueprint,AsArray));
 			if(FBPTerminal** FakeArrayTerm = Context.NetMap.Find(ArrayNode->FakeArrayInputPin))
 			{
 				auto FakeArrayProp = CastField<FArrayProperty>((*FakeArrayTerm)->AssociatedVarProperty);

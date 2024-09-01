@@ -27,7 +27,7 @@ void UK2Node_GeneralAddToTrait::AllocateDefaultPins()
 		if(NewPin->PinName == TEXT("bConst"))
 		{
 			Pin_bConst = NewPin;
-			Pin_bConst->SafeSetHidden(true);	
+			Pin_bConst->SafeSetHidden(true);
 		}
 		if(NewPin->PinName == TEXT("bAddDependency"))
 		{
@@ -72,13 +72,8 @@ FText UK2Node_GeneralAddToTrait::GetNodeTitle(ENodeTitleType::Type TitleType) co
 		return LOCTEXT("GeneralAddToTrait_FullTitle", "Not Struct!");
 	}
 	if(bAddDependency)
-	{
 		return LOCTEXT("GeneralAddToTrait", "Add Dependency To Trait");	
-	}
-	else
-	{
-		return LOCTEXT("GeneralAddToTrait", "Add Value To Trait");
-	}
+	return LOCTEXT("GeneralAddToTrait", "Add Value To Trait");
 }
 
 FSlateIcon UK2Node_GeneralAddToTrait::GetIconAndTint(FLinearColor& OutColor) const

@@ -18,12 +18,12 @@ struct FEmptyStubStruct
 };
 
 USTRUCT(BlueprintType)
-struct FArrayViewBlueprint
+struct FScriptArrayView
 {
 	GENERATED_BODY()
 
 #if CPP
-	FArrayViewBlueprint()
+	FScriptArrayView()
 		: ArrayView()
 		, ArrayMax(0)		
 		, Struct(nullptr)
@@ -31,9 +31,9 @@ struct FArrayViewBlueprint
 	{		
 	};
 	
-	FArrayViewBlueprint& operator = (const FArrayViewBlueprint&);
-	explicit FArrayViewBlueprint(const TArrayView<uint8>& InArrayView, const UScriptStruct* InStruct);
-	~FArrayViewBlueprint();
+	FScriptArrayView& operator = (const FScriptArrayView&);
+	explicit FScriptArrayView(const TArrayView<uint8>& InArrayView, const UScriptStruct* InStruct);
+	~FScriptArrayView();
 
 	union
 	{
@@ -75,17 +75,17 @@ public:
 	static int32 GetNumEntities(const FMassExecutionContextWrapper& Wrapper);
 
 	UFUNCTION(BlueprintCallable)
-	static bool GetMutableFragmentView(const FMassExecutionContextWrapper& Wrapper, const UScriptStruct* Struct, FArrayViewBlueprint& OutArrayView);
+	static bool GetMutableFragmentView(const FMassExecutionContextWrapper& Wrapper, const UScriptStruct* Struct, FScriptArrayView& OutArrayView);
 
 	UFUNCTION(BlueprintPure, BlueprintCallable, CustomThunk, meta=(CustomStructureParam = "OutStruct"))
-	static bool GetStructRef(UPARAM(ref) const FArrayViewBlueprint& ArrayView, int32 Index, int32& OutStruct);
+	static bool GetStructRef(UPARAM(ref) const FScriptArrayView& ArrayView, int32 Index, int32& OutStruct);
 	DECLARE_FUNCTION(execGetStructRef);
 
 	UFUNCTION(BlueprintCallable, meta=(WorldContext="WorldContext"))
 	static bool SpawnEntities(const UMassEntityConfigAsset* ConfigAsset, int32 NumberToSpawn, UObject* WorldContext);
 
 	UFUNCTION(BlueprintCallable, CustomThunk, meta=(ArrayParm = "OutArray"))
-	static bool GetArrayFromView(TArray<int32>& OutArray, UPARAM(ref) const FArrayViewBlueprint& OutArrayView);
+	static bool GetArrayFromView(TArray<int32>& OutArray, UPARAM(ref) const FScriptArrayView& OutArrayView);
 	DECLARE_FUNCTION(execGetArrayFromView);
 
 	UFUNCTION(BlueprintCallable)

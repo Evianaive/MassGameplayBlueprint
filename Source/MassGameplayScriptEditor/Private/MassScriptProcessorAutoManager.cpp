@@ -1,4 +1,4 @@
-﻿#include "MassProcessorBlueprintAutoManager.h"
+﻿#include "MassScriptProcessorAutoManager.h"
 
 #include "EditorClassUtils.h"
 #include "MassGameplayScriptSettings.h"
@@ -7,25 +7,25 @@
 #include "Editor/ClassViewer/Private/ClassViewerNode.h"
 #include "UObject/CoreRedirects.h"
 
-FMassProcessorBlueprintAutoManager::FMassProcessorBlueprintAutoManager()
+FMassScriptProcessorAutoManager::FMassScriptProcessorAutoManager()
 {
 	// Register with the Asset Registry to be informed when it is done loading up files.
 	IAssetRegistry& AssetRegistry = FModuleManager::LoadModuleChecked<FAssetRegistryModule>(AssetRegistryConstants::ModuleName).Get();
-	OnFilesLoadedUpdateBlueprintProcessorHandle = AssetRegistry.OnFilesLoaded().AddStatic( &FMassProcessorBlueprintAutoManager::UpdateBlueprintProcessor );
-	AssetRegistry.OnAssetAdded().AddRaw( this, &FMassProcessorBlueprintAutoManager::AddAsset);
-	AssetRegistry.OnAssetRemoved().AddRaw( this, &FMassProcessorBlueprintAutoManager::RemoveAsset );
+	OnFilesLoadedUpdateScriptProcessorHandle = AssetRegistry.OnFilesLoaded().AddStatic( &FMassScriptProcessorAutoManager::UpdateScriptProcessor );
+	AssetRegistry.OnAssetAdded().AddRaw( this, &FMassScriptProcessorAutoManager::AddAsset);
+	AssetRegistry.OnAssetRemoved().AddRaw( this, &FMassScriptProcessorAutoManager::RemoveAsset );
 
 	// Register to have Populate called when doing a Reload.
-	FCoreUObjectDelegates::ReloadCompleteDelegate.AddRaw( this, &FMassProcessorBlueprintAutoManager::OnReloadComplete );
+	FCoreUObjectDelegates::ReloadCompleteDelegate.AddRaw( this, &FMassScriptProcessorAutoManager::OnReloadComplete );
 
 	// Register to have Populate called when a Blueprint is compiled.
 	
-	// OnBlueprintCompiledUpdateBlueprintProcessorHandle            = GEditor->OnBlueprintCompiled().AddStatic( &FMassProcessorBlueprintAutoManager::UpdateBlueprintProcessor );
-	// OnClassPackageLoadedOrUnloadedUpdateBlueprintProcessorHandle = GEditor->OnClassPackageLoadedOrUnloaded().AddStatic( &FMassProcessorBlueprintAutoManager::UpdateBlueprintProcessor );
+	// OnBlueprintCompiledUpdateScriptProcessorHandle            = GEditor->OnBlueprintCompiled().AddStatic( &FMassProcessorBlueprintAutoManager::UpdateScriptProcessor );
+	// OnClassPackageLoadedOrUnloadedUpdateScriptProcessorHandle = GEditor->OnClassPackageLoadedOrUnloaded().AddStatic( &FMassProcessorBlueprintAutoManager::UpdateScriptProcessor );
 
-	FModuleManager::Get().OnModulesChanged().AddStatic( &FMassProcessorBlueprintAutoManager::OnModulesChanged);
+	FModuleManager::Get().OnModulesChanged().AddStatic( &FMassScriptProcessorAutoManager::OnModulesChanged);
 
-	// FMassProcessorBlueprintAutoManager::UpdateBlueprintProcessor();
+	// FMassProcessorBlueprintAutoManager::UpdateScriptProcessor();
 }
 
 void FixupClassCoreRedirects(FTopLevelAssetPath& InOutClassPath)
@@ -48,7 +48,7 @@ void FixupClassCoreRedirects(FTopLevelAssetPath& InOutClassPath)
 	}
 };
 
-void FMassProcessorBlueprintAutoManager::AddAsset(const FAssetData& InAddedAssetData)
+void FMassScriptProcessorAutoManager::AddAsset(const FAssetData& InAddedAssetData)
 {
 	IAssetRegistry& AssetRegistry = FModuleManager::LoadModuleChecked<FAssetRegistryModule>(AssetRegistryConstants::ModuleName).Get();
 	if (AssetRegistry.IsLoadingAssets())
@@ -63,17 +63,12 @@ void FMassProcessorBlueprintAutoManager::AddAsset(const FAssetData& InAddedAsset
 		if(UClass* Class = FindObject<UClass>(nullptr, *ClassPath.ToString()))
 		{
 			if(Class->IsChildOf(UMassScriptProcessor::StaticClass()))
-				GetMutableDefault<UMassGameplayScriptSettings>()->AddBlueprintProcessorClass(Class);			
-		}		
-		// TSharedPtr<FClassViewerNode>& Node = ClassPathToNode.FindOrAdd(ClassPath);
-		// InAddedAssetData.GetSoftObjectPath()
-
-		// ClassPath.ass
-		// CreateOrUpdateUnloadedClassNode(Node, AssetData, ClassPath);
+				GetMutableDefault<UMassGameplayScriptSettings>()->AddScriptProcessorClass(Class);			
+		}
 	}
 }
 
-void FMassProcessorBlueprintAutoManager::RemoveAsset(const FAssetData& InRemovedAssetData)
+void FMassScriptProcessorAutoManager::RemoveAsset(const FAssetData& InRemovedAssetData)
 {
 	// BPGCs can be missing if it was already deleted prior to the notification being sent. 
 	// Let's try to reconstruct the generated class path from the BP object path.
@@ -82,19 +77,19 @@ void FMassProcessorBlueprintAutoManager::RemoveAsset(const FAssetData& InRemoved
 
 	if(!ClassPath.IsNull())
 	{
-		GetMutableDefault<UMassGameplayScriptSettings>()->RemoveBlueprintProcessorAsset(ClassPath.ToString());
+		GetMutableDefault<UMassGameplayScriptSettings>()->RemoveScriptProcessorAsset(ClassPath.ToString());
 	}
 }
 
-void FMassProcessorBlueprintAutoManager::OnReloadComplete(EReloadCompleteReason ReloadCompleteReason)
+void FMassScriptProcessorAutoManager::OnReloadComplete(EReloadCompleteReason ReloadCompleteReason)
 {
 }
 
-void FMassProcessorBlueprintAutoManager::OnModulesChanged(FName Name, EModuleChangeReason ModuleChangeReason)
+void FMassScriptProcessorAutoManager::OnModulesChanged(FName Name, EModuleChangeReason ModuleChangeReason)
 {
 }
 
-void FMassProcessorBlueprintAutoManager::UpdateBlueprintProcessor()
+void FMassScriptProcessorAutoManager::UpdateScriptProcessor()
 {
 	IAssetRegistry& AssetRegistry = FModuleManager::LoadModuleChecked<FAssetRegistryModule>(AssetRegistryConstants::ModuleName).Get();
 	FString ClassPathString;
@@ -121,8 +116,8 @@ void FMassProcessorBlueprintAutoManager::UpdateBlueprintProcessor()
 			FTopLevelAssetPath ParentClassPath(FTopLevelAssetPath(*FPackageName::ExportTextPathToObjectPath(ParentClassPathString)));
 			FixupClassCoreRedirects(ParentClassPath);
 			
-			const bool bNormalBlueprintType = AssetData.GetTagValueRef<FString>(FBlueprintTags::BlueprintType) == TEXT("BPType_Normal");
-			const uint32 ClassFlags = AssetData.GetTagValueRef<uint32>(FBlueprintTags::ClassFlags);
+			// const bool bNormalBlueprintType = AssetData.GetTagValueRef<FString>(FBlueprintTags::BlueprintType) == TEXT("BPType_Normal");
+			// const uint32 ClassFlags = AssetData.GetTagValueRef<uint32>(FBlueprintTags::ClassFlags);
 			
 			FSoftClassPath NativeClassPath(AssetData.GetTagValueRef<FString>(FBlueprintTags::NativeParentClassPath));
 			if(MassProcessorBlueprintClassPath != NativeClassPath.GetAssetPath())
@@ -130,7 +125,7 @@ void FMassProcessorBlueprintAutoManager::UpdateBlueprintProcessor()
 			
 			if(const auto Class = LoadObject<UClass>(nullptr, *ClassPath.ToString()))
 			{
-				GetMutableDefault<UMassGameplayScriptSettings>()->AddBlueprintProcessorClass(Class);	
+				GetMutableDefault<UMassGameplayScriptSettings>()->AddScriptProcessorClass(Class);	
 			}	
 		}
 	}
@@ -147,7 +142,7 @@ void FMassProcessorBlueprintAutoManager::UpdateBlueprintProcessor()
 			FixupClassCoreRedirects(ClassPathNameFromAssetPath);
 			if(UClass* Class = FindObject<UClass>(nullptr, *ClassPathNameFromAssetPath.ToString()))
 			{
-				GetMutableDefault<UMassGameplayScriptSettings>()->AddBlueprintProcessorClass(Class);			
+				GetMutableDefault<UMassGameplayScriptSettings>()->AddScriptProcessorClass(Class);			
 			}
 		}
 	}

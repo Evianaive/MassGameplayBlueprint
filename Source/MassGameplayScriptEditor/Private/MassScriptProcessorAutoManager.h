@@ -1,10 +1,10 @@
 ﻿#pragma once
 #include "AssetRegistry/IAssetRegistry.h"
 
-class FMassProcessorBlueprintAutoManager
+class FMassScriptProcessorAutoManager
 {
 public:
-	FMassProcessorBlueprintAutoManager();
+	FMassScriptProcessorAutoManager();
 	
 	/** Callback registered to the Asset Registry to be notified when an asset is added. */
 	void AddAsset(const FAssetData& InAddedAssetData);
@@ -15,8 +15,8 @@ public:
 
 	static void OnModulesChanged(FName Name, EModuleChangeReason ModuleChangeReason);
 	
-	static void UpdateBlueprintProcessor();
-	FDelegateHandle OnFilesLoadedUpdateBlueprintProcessorHandle;
-	FDelegateHandle OnBlueprintCompiledUpdateBlueprintProcessorHandle;
-	FDelegateHandle OnClassPackageLoadedOrUnloadedUpdateBlueprintProcessorHandle;
+	static void UpdateScriptProcessor();
+	FDelegateHandle OnFilesLoadedUpdateScriptProcessorHandle;
+	FDelegateHandle OnBlueprintCompiledUpdateScriptProcessorHandle;
+	FDelegateHandle OnClassPackageLoadedOrUnloadedUpdateScriptProcessorHandle;
 };

@@ -11,16 +11,16 @@
 
 #define LOCTEXT_NAMESPACE "MassBlueprint"
 
-FArrayViewBlueprint& FArrayViewBlueprint::operator=(const FArrayViewBlueprint& InArrayViewBlueprint)
+FScriptArrayView& FScriptArrayView::operator=(const FScriptArrayView& InScriptArrayView)
 {
-	ArrayView = InArrayViewBlueprint.ArrayView;
-	ArrayMax = InArrayViewBlueprint.ArrayMax;
-	Struct = InArrayViewBlueprint.Struct;
+	ArrayView = InScriptArrayView.ArrayView;
+	ArrayMax = InScriptArrayView.ArrayMax;
+	Struct = InScriptArrayView.Struct;
 	SizeOfStruct = 0;
 	return *this;
 }
 
-FArrayViewBlueprint::FArrayViewBlueprint(
+FScriptArrayView::FScriptArrayView(
 	const TArrayView<uint8>& InArrayView,
 	const UScriptStruct* InStruct)
 	: ArrayView(InArrayView)
@@ -29,7 +29,7 @@ FArrayViewBlueprint::FArrayViewBlueprint(
 {
 }
 
-FArrayViewBlueprint::~FArrayViewBlueprint()
+FScriptArrayView::~FScriptArrayView()
 {
 	ArrayView.~TArrayView();
 }
@@ -39,7 +39,7 @@ int32 UMassBlueprintLibrary::GetNumEntities(const FMassExecutionContextWrapper& 
 	return Wrapper.Context->GetNumEntities();
 }
 
-bool UMassBlueprintLibrary::GetMutableFragmentView(const FMassExecutionContextWrapper& Wrapper, const UScriptStruct* Struct, FArrayViewBlueprint& OutArrayView)
+bool UMassBlueprintLibrary::GetMutableFragmentView(const FMassExecutionContextWrapper& Wrapper, const UScriptStruct* Struct, FScriptArrayView& OutArrayView)
 {
 	auto FragmentView = Wrapper.Context->GetMutableFragmentView(Struct);
 
@@ -59,13 +59,13 @@ bool UMassBlueprintLibrary::GetMutableFragmentView(const FMassExecutionContextWr
 	return true;
 }
 
-bool UMassBlueprintLibrary::GetStructRef(const FArrayViewBlueprint& ArrayView, int32 Index, int32& OutStruct)
+bool UMassBlueprintLibrary::GetStructRef(const FScriptArrayView& ArrayView, int32 Index, int32& OutStruct)
 {
 	return false;
 }
 DEFINE_FUNCTION(UMassBlueprintLibrary::execGetStructRef)
 {
-	P_GET_STRUCT_REF(FArrayViewBlueprint, ArrayView);
+	P_GET_STRUCT_REF(FScriptArrayView, ArrayView);
 	P_GET_PROPERTY(FIntProperty,Index);
 	
 	Stack.MostRecentPropertyAddress = nullptr;
@@ -156,7 +156,7 @@ bool UMassBlueprintLibrary::SpawnEntities(const UMassEntityConfigAsset* ConfigAs
 
 }
 
-bool UMassBlueprintLibrary::GetArrayFromView(TArray<int32>& OutArray, const FArrayViewBlueprint& ArrayView)
+bool UMassBlueprintLibrary::GetArrayFromView(TArray<int32>& OutArray, const FScriptArrayView& ArrayView)
 {
 	return false;
 }
@@ -176,7 +176,7 @@ DEFINE_FUNCTION(UMassBlueprintLibrary::execGetArrayFromView)
 	{
 		InnerStruct = StructProperty->Struct;
 	}
-	P_GET_STRUCT_REF(FArrayViewBlueprint,ArrayView);
+	P_GET_STRUCT_REF(FScriptArrayView,ArrayView);
 
 	P_FINISH;
 	P_NATIVE_BEGIN;

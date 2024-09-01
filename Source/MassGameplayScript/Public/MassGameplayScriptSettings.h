@@ -26,8 +26,8 @@ public:
 
 	UMassGameplayScriptSettings(const FObjectInitializer& ObjectInitializer = FObjectInitializer::Get());
 	static FOnInitialized& GetOnInitializedEvent() { return GET_MASS_BP_CONFIG_VALUE(OnInitializedEvent); }
-	void AddBlueprintProcessorClass(TSubclassOf<UMassScriptProcessor> Class);
-	void RemoveBlueprintProcessorAsset(const FSoftClassPath& ClassPath);
+	void AddScriptProcessorClass(TSubclassOf<UMassScriptProcessor> Class);
+	void RemoveScriptProcessorAsset(const FSoftClassPath& ClassPath);
 	// void RemoveBlueprintProcessorClass();
 #if WITH_EDITOR
 	FOnSettingsChange& GetOnSettingsChange() { return OnSettingsChange; }
@@ -42,7 +42,7 @@ protected:
 public:
 	/** This list contains all the processors available in the given binary (including plugins). The contents are sorted by display name.*/
 	UPROPERTY(VisibleAnywhere, Category = Mass, Transient, EditFixedSize, meta=(MetaClass="/Script/MassGameplayBlueprint.MassProcessorBlueprint"))
-	TArray<FSoftClassPath> BlueprintProcessorClasses;
+	TArray<FSoftClassPath> ScriptProcessorClasses;
 
 #if WITH_EDITORONLY_DATA
 protected:

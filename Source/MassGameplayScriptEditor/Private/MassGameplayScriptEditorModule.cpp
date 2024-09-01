@@ -1,7 +1,7 @@
 ﻿// Copyright Epic Games, Inc. All Rights Reserved.
 
 #include "MassGameplayScriptEditorModule.h"
-#include "MassProcessorBlueprintAutoManager.h"
+#include "MassScriptProcessorAutoManager.h"
 #include "UserDefinedStructInherit/StructInheritExtender.h"
 #include "UserDefinedStructInherit/MassBasicStructFilter.h"
 #include "Customization/MassStructSelectDetails.h"
@@ -35,7 +35,7 @@ void FMassGameplayScriptEditorModule::StartupModule()
 {
 	// This code will execute after your module is loaded into memory; the exact timing is specified in the .uplugin file per-module
 	{
-		MassProcessorBlueprintAutoManager = MakeShareable(new FMassProcessorBlueprintAutoManager);
+		MassScriptProcessorAutoManager = MakeShareable(new FMassScriptProcessorAutoManager);
 	}	
 	{
 		TSharedPtr<IStructViewerFilter> StructFilter = MakeShared<FMassBasicStructFilter>();		
