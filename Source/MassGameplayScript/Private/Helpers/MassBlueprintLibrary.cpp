@@ -16,7 +16,7 @@ FScriptArrayView& FScriptArrayView::operator=(const FScriptArrayView& InScriptAr
 	ArrayView = InScriptArrayView.ArrayView;
 	ArrayMax = InScriptArrayView.ArrayMax;
 	Struct = InScriptArrayView.Struct;
-	SizeOfStruct = 0;
+	SizeOfStruct = Struct?Struct->GetStructureSize():0;
 	return *this;
 }
 
@@ -25,7 +25,7 @@ FScriptArrayView::FScriptArrayView(
 	const UScriptStruct* InStruct)
 	: ArrayView(InArrayView)
 	, Struct(InStruct)
-	, SizeOfStruct(0)
+	, SizeOfStruct(InStruct?InStruct->GetStructureSize():0)
 {
 }
 
@@ -63,6 +63,7 @@ bool UMassBlueprintLibrary::GetStructRef(const FScriptArrayView& ArrayView, int3
 {
 	return false;
 }
+
 DEFINE_FUNCTION(UMassBlueprintLibrary::execGetStructRef)
 {
 	P_GET_STRUCT_REF(FScriptArrayView, ArrayView);
@@ -70,16 +71,15 @@ DEFINE_FUNCTION(UMassBlueprintLibrary::execGetStructRef)
 	
 	Stack.MostRecentPropertyAddress = nullptr;
 	Stack.MostRecentPropertyContainer = nullptr;
+	//Todo We Can Read Property Directly!
 	Stack.StepCompiledIn<FStructProperty>(nullptr);
-	
-	void* PropertyAddress = Stack.MostRecentPropertyAddress;
 	FStructProperty* ValueProp = CastField<FStructProperty>(Stack.MostRecentProperty);
 
 	P_FINISH
 	
 	bool bResult = true;
 	
-	if (!PropertyAddress || !ValueProp)
+	if (!ValueProp)
 	{
 		FBlueprintExceptionInfo ExceptionInfo(
 			EBlueprintExceptionType::AbortExecution,
@@ -92,7 +92,7 @@ DEFINE_FUNCTION(UMassBlueprintLibrary::execGetStructRef)
 	if(ValueProp->Struct != ArrayView.Struct)
 	{
 		FBlueprintExceptionInfo ExceptionInfo(
-			EBlueprintExceptionType::AbortExecution,
+			EBlueprintExceptionType::FatalError,
 			LOCTEXT("GetStructRef", "Unmatched Output Type")
 		);
 
@@ -100,18 +100,16 @@ DEFINE_FUNCTION(UMassBlueprintLibrary::execGetStructRef)
 		bResult = false;
 	}
 
-	// Todo there is still a copy, how can I return the reference to Data Directly?
 	if(bResult)
 	{
-		P_NATIVE_BEGIN
-		// Stack.MostRecentPropertyAddress = ArrayView.ArrayView.GetData()+ArrayView.SizeOfStruct*Index;
-		ArrayView.Struct->CopyScriptStruct(
-			PropertyAddress,
-			Stack.MostRecentPropertyAddress,
-			1);
-		P_NATIVE_END
+		Stack.MostRecentPropertyAddress = ArrayView.ArrayView.GetData()+ArrayView.SizeOfStruct*Index;
+		if(Stack.MostRecentProperty && RESULT_PARAM)
+			Stack.MostRecentProperty->CopyCompleteValueToScriptVM(RESULT_PARAM, Stack.MostRecentPropertyAddress);
 	}
-	*(bool*)RESULT_PARAM = bResult;
+	else
+	{
+		Stack.MostRecentPropertyAddress = nullptr;
+	}
 }
 
 bool UMassBlueprintLibrary::SpawnEntities(const UMassEntityConfigAsset* ConfigAsset, int32 NumberToSpawn, UObject* WorldContext)

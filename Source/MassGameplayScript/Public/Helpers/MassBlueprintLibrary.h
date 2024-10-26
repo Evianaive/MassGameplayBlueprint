@@ -7,6 +7,7 @@
 #include "MassBlueprintLibrary.generated.h"
 
 
+struct FMassScriptEntityQuery;
 class UMassProcessor;
 class UMassEntityConfigAsset;
 
